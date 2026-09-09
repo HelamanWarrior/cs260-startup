@@ -6,13 +6,14 @@ Liquid Notes is a dynamic knowledge database that transforms how you capture and
 
 ### Elevator pitch
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Traditional note-taking apps force you to spend more time managing folders than actually thinking. Liquid Notes changes that by turning your voice into a dynamic, interconnected knowledge base. You just speak your thoughts, and an on-device AI agent automatically transcribes, organizes, and links your ideas together in real time. Instead of searching through static files, your database adapts to your queries, surfacing hidden connections and letting your thoughts branch naturally. It is a tool designed to stop the busywork of organization and empower the evolution of human thought.
 
 ### Design
 
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
 ![Design image](placeholder.png)
 
-Traditional note-taking apps force you to spend more time managing folders than actually thinking. Liquid Notes changes that by turning your voice into a dynamic, interconnected knowledge base. You just speak your thoughts, and an on-device AI agent automatically transcribes, organizes, and links your ideas together in real time. Instead of searching through static files, your database adapts to your queries, surfacing hidden connections and letting your thoughts branch naturally. It is a tool designed to stop the busywork of organization and empower the evolution of human thought.
 
 ```mermaid
 sequenceDiagram
