@@ -14,6 +14,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 ![Begin recording screen design](assets/begin-recording-screen.jpg)
 ![Recording screen design](assets/recording-screen.jpg)
+![Notes screen design](assets/notes-screen.jpg)
 
 ```mermaid
 sequenceDiagram
