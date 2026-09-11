@@ -56,7 +56,7 @@ I am going to use the required technologies in the following ways.
 - **React** - Single-page application managing component views for voice recording, real-time transcription feedback and backend endpoint synchronization.
 - **Service** - Backend service providing endpoints for:
     - managing local voice transcription data
-    - processing queries through the AI agent
+    - processing queries through a [AI agent API](https://ai.google.dev/gemini-api/docs)
     - retrieving, organizing, and linking knowledge nodes
     - registering, logging in, and logging out users with securely stored credentials
 - **DB/Login** - Stoers user authentication data, voice recordings, transcribed text chunks, and relational idea links in the database.
