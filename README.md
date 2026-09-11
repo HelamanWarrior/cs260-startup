@@ -43,9 +43,9 @@ graph LR
 
 ### Key features
 
-- Describe your key feature
-- Describe your key feature
-- Describe your key feature
+- Auto-linking key topics between notes
+- Accurate local voice transcription
+- Note summaries & dynamic search results
 
 ### Technologies
 
