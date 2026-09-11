@@ -41,22 +41,6 @@ graph LR
   Web -->|8. Display result / Audio| You
 ```
 
-```mermaid
-sequenceDiagram
-    actor You
-    actor Website
-    actor Sherpa-Onnx
-    actor LLM API
-    actor Database
-
-    You->>Website: Input audio/text prompt
-    Website->>Sherpa-Onnx: Process speech/audio locally
-    Website->>LLM API: Send query & context
-    LLM API-->>Website: Return generated response
-    Database-->>Website: Return data
-    Website-->>You: Display result / Play audio
-```
-
 ### Key features
 
 - Describe your key feature
