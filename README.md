@@ -10,16 +10,21 @@ Traditional note apps force you to spend more time organizing folders than actua
 
 ### Design
 
-Built from the ground up on a "less is more" philosophy, the interface delivers a natural, fluid navigation experience. Every element is placed intentionally for effortless one-hand mobile navigation. Screens seamlessly cascade into one another, turning transitions into a continuous journey rather than abrupt jumps. The design stands apart from the standard, lifeless web designs of this age and creates a unique and minimal feel that encourages users to interact and deepen their thought-processes.
+Built from the ground up on a "less is more" philosophy, the interface delivers a natural, fluid navigation experience. Every element is placed intentionally for effortless one-hand mobile navigation. Screens seamlessly cascade into one another, turning transitions into a continuous journey rather than abrupt jumps. The design stands apart from the standard lifeless web designs of this age and creates a unique and minimal feel that encourages users to interact and deepen their thought-processes.
 
 ![Begin recording screen design](assets/begin-recording-screen.jpg)
 ![Recording screen design](assets/recording-screen.jpg)
 ![Notes screen design](assets/notes-screen.jpg)
 
+Here is a sequence diagram that demonstrates the backend.
+
 ```mermaid
 sequenceDiagram
     actor You
+    actor Sherpa-Onnx (transcription engine)
+    actor OpenAI API
     actor Website
+    actor Database
     You->>Website: Replace this with your design
 ```
 
