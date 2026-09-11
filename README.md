@@ -10,7 +10,7 @@ Traditional note apps force you to spend more time organizing folders than actua
 
 ### Design
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Built from the ground up on a "less is more" philosophy, the interface delivers a natural, fluid navigation experience. Every element is placed intentionally for effortless one-hand mobile navigation. Screens seamlessly cascade into one another, turning transitions into a continuous journey rather than abrupt jumps. The design stands apart from the standard, lifeless web designs of this age and creates a unique and minimal feel that encourages users to interact and deepen their thought-processes.
 
 ![Begin recording screen design](assets/begin-recording-screen.jpg)
 ![Recording screen design](assets/recording-screen.jpg)
