@@ -21,14 +21,17 @@ Here is a sequence diagram that demonstrates the backend.
 ```mermaid
 sequenceDiagram
     actor You
+    actor Website
     actor Sherpa-Onnx
     actor LLM API
-    actor Website
     actor Database
-    You->>Website
-    Website->>Sherpa-Onnx
-    Sherpa-Onnx->>Website
-    Website->>Database
+
+    You->>Website: Input audio/text prompt
+    Website->>Sherpa-Onnx: Process speech/audio locally
+    Website->>LLM API: Send query & context
+    LLM API-->>Website: Return generated response
+    Database-->>Website: Return data
+    Website-->>You: Display result / Play audio
 ```
 
 ### Key features
