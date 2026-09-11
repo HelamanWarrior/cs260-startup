@@ -21,11 +21,14 @@ Here is a sequence diagram that demonstrates the backend.
 ```mermaid
 sequenceDiagram
     actor You
-    actor Sherpa-Onnx (transcription engine)
-    actor OpenAI API
+    actor Sherpa-Onnx
+    actor LLM API
     actor Website
     actor Database
     You->>Website: Replace this with your design
+    Website->>Sherpa-Onnx
+    Sherpa-Onnx->>Website
+    Website->>Database
 ```
 
 ### Key features
