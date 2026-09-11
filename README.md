@@ -18,7 +18,7 @@ Built from the ground up on a "less is more" philosophy, the interface delivers 
 
 Here is a sequence diagram that demonstrates the backend.
 
-```
+```mermaid
 graph TD
   subgraph Client / Local
     You[You]
