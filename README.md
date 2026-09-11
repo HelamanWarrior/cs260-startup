@@ -18,6 +18,29 @@ Built from the ground up on a "less is more" philosophy, the interface delivers 
 
 Here is a sequence diagram that demonstrates the backend.
 
+```
+graph TD
+  subgraph Client / Local
+    You[You]
+    Sherpa[Sherpa-Onnx]
+  end
+
+  subgraph Backend / Cloud
+    Web[Website Frontend]
+    LLM[LLM API]
+    DB[(Database)]
+  end
+
+  You -->|1. Input audio/text| Web
+  Web -->|2. Process locally| Sherpa
+  Sherpa -->|3. Return transcription| Web
+  Web -->|4. Send query & context | LLM
+  LLM -->|5. Return response| Web
+  Web -->|6. Fetch or store record| DB
+  DB -->|7. Return data| Web
+  Web -->|8. Display result / Audio| You
+```
+
 ```mermaid
 sequenceDiagram
     actor You
