@@ -25,7 +25,7 @@ sequenceDiagram
     actor LLM API
     actor Website
     actor Database
-    You->>Website: Replace this with your design
+    You->>Website
     Website->>Sherpa-Onnx
     Sherpa-Onnx->>Website
     Website->>Database
