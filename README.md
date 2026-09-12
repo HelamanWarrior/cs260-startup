@@ -77,9 +77,9 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **Rented EC2 server** - I did not complete this part of the deliverable.
-- [ ] **Leased domain name** - I did not complete this part of the deliverable.
-- [ ] **Server accessible** from my domain: [https://yourdomainnamehere.click](https://yourdomainnamehere.click) - I did not complete this part of the deliverable.
+- [x] **Rented EC2 server** - Using my homeserver running an Nginx & Lets Encrypt docker image
+- [x] **Leased domain name** - Already own plug-world.com domain name added CNAME for liquidnotes
+- [x] **Server accessible** from my domain: [https://liquidnotes.plug-world.com](https://liquidnotes.plug-world.com)
 
 ## 🚀 HTML deliverable
 
