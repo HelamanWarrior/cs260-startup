@@ -45,6 +45,21 @@ Model: `nemotron-speech-streaming-en-0.6b-Q8_0.gguf`
 
 Despite the GPU being over twice as fast, this clearly shows that CPU transcription is fully capable as well (especially with real-time transcription). These benchmarks reveal it's quite likely I can have a model like this run in real-time on smartphone hardware.
 
+## LLM Prompts
+
+```
+Analyze the following transcript from an audio recording and extract structured metadata to enable future cross-referencing and semantic linking with existing notes.
+
+TRANSCRIPT:
+"[ transcript ]"
+
+OUTPUT REQUIREMENTS:
+1. Title: A concise, highly specific title (max 6 words) that captures the core subject.
+2. Summary: A dense 2-3 sentence overview capturing key decisions, topics, and actionable items.
+3. Tags: 3 to 7 hierarchical or thematic tags. Include a mix of broad categories (e.g., #project, #idea) and specific sub-topics (e.g., #machine-learning, #budget-2026).
+4. Entities & Concepts: A comma-separated list of key proper nouns, distinct tools, projects, or recurring themes mentioned, optimized for finding conceptual overlaps with other notes.
+```
+
 ## AWS
 
 Interesting things I have learned about AWS
