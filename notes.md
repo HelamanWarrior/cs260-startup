@@ -34,6 +34,8 @@ With the ability to run frontier models such as Nvidia's Parakeet, it's clear th
 
 #### Benchmarks
 
+Model: `nemotron-speech-streaming-en-0.6b-Q8_0.gguf`
+
 250ms streamed chunks of a 9 minute audio clip.
 
 | Hardware | Speed | Process time |
