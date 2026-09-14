@@ -22,7 +22,7 @@ Here is a sequence diagram that demonstrates the backend.
 graph LR
   subgraph Client / Local
     You[You]
-    Sherpa[Sherpa-Onnx]
+    transcribeCPP[transcibeCPP]
   end
 
   subgraph Backend / Cloud
@@ -32,8 +32,8 @@ graph LR
   end
 
   You -->|1. Input audio/text| Web
-  Web -->|2. Process locally| Sherpa
-  Sherpa -->|3. Return transcription| Web
+  Web -->|2. Process locally| transcribeCPP
+  transcribeCPP -->|3. Return transcription| Web
   Web -->|4. Send query & context | LLM
   LLM -->|5. Return response| Web
   Web -->|6. Fetch or store record| DB
