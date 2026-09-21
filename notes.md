@@ -66,7 +66,24 @@ Interesting things I have learned about AWS
 
 ## HTML
 
-Interesting things I have learned about HTML
+### FORMS
+
+1. `action`: Defines the URL of the server-side resouce (e.g., an API endpoint) that will process the submitted data.
+2. `method`: Specifies the HTTP method used to send the data.
+- `GET`: Appends form data to the URL in name/value pairs. Used for non-sensitive data like search queries.
+- `POST`: Sends data inside the body of the HTTP request. Used for sensitive information (like passwords) or when sending large amounts of data.
+
+- `<label>`: Provides a caption for an input. It improves accessibility and increases the clickable area of the associated field.
+- `<input>`: Used for text fields, checkboxes, radio buttons, and more, depending on its type attribute.
+- `<textarea>`: Used for multi-line text input.
+- `<select>`: Creates a drop-down list of options.
+- `<button>`: Used to submit the form (when `type="submit"`) or reset it (when `type="reset").
+
+**Best Practices:**
+
+- **Accessibility:** Always associate labels with inputs using the `for` attribute on the `<label>` and a matching `id` on the `<input>`.
+- **Validation:** Use attributes like `required`, `minlength`, and `pattern` to ensure data is formatted correctly before submission.
+- **Security:** Always use `POST` method for forms that handle sensitive user data.
 
 ## React
 
