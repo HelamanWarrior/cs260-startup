@@ -78,8 +78,8 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
 - [x] **Rented EC2 server** - Using my homeserver running an Nginx & Lets Encrypt docker image
-- [x] **Leased domain name** - Already own plug-world.com domain name added CNAME for liquidnotes
-- [x] **Server accessible** from my domain: [https://liquidnotes.plug-world.com](https://liquidnotes.plug-world.com)
+- [x] **Leased domain name** - Already own plug-world.com domain name with CNAME wildcard
+- [x] **Server accessible** from my domain: [https://startup.plug-world.com](https://startup.plug-world.com)
 
 ## 🚀 HTML deliverable
 
