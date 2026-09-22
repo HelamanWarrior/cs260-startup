@@ -90,7 +90,7 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 - [x] **Proper HTML element usage** - Nav bar uses navigation tags. Many structural tags used properly as well: header, footer, & input text field.
 - [x] **Links** - Links to each page in the navbar; link to the source-code, change password & logout links.
 - [x] **Text** - About page contains an in-depth explanation of the application, it's purpose, and what it solves; it also includes key definitions.
-- [x] **3rd party API placeholder** - I did not complete this part of the deliverable.
+- [x] **3rd party API placeholder** - Search page includes a placeholder where an LLM API will stream text to the content of the webpage.
 - [x] **Images** - Added a placeholder logo image on the home page.
 - [x] **Login placeholder** - Login page included in navigation bar with the username placeholder text. Page includes a logout & change password link.
 - [x] **DB data placeholder** - Database placeholder on the search page. The user will be able to retrieve previous drops (transcript notes) from the database.
