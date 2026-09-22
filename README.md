@@ -87,14 +87,14 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 - [x] I completed the prerequisites for this deliverable (Simon deployed, GitHub link, Git commits)
 - [x] **HTML pages** - 4 HTML pages consisting of home, search, about, & my account.
-- [x] **Proper HTML element usage** - Nav bar uses navigation tags, header, footer, proper input field.
+- [x] **Proper HTML element usage** - Nav bar uses navigation tags. Many structural tags used properly as well: header, footer, & input text field.
 - [x] **Links** - Links to each page in the navbar; link to the source-code, change password & logout links.
 - [x] **Text** - About page contains an in-depth explanation of the application, it's purpose, and what it solves; it also includes key definitions.
-- [ ] **3rd party API placeholder** - I did not complete this part of the deliverable.
+- [x] **3rd party API placeholder** - I did not complete this part of the deliverable.
 - [ ] **Images** - I did not complete this part of the deliverable.
-- [ ] **Login placeholder** - I did not complete this part of the deliverable.
+- [x] **Login placeholder** - Login page included in navigation bar with the username placeholder text. Page includes a logout & change password link.
 - [ ] **DB data placeholder** - I did not complete this part of the deliverable.
-- [ ] **WebSocket placeholder** - I did not complete this part of the deliverable.
+- [x] **WebSocket placeholder** - I did not complete this part of the deliverable.
 
 ## 🚀 CSS deliverable
 
