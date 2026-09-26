@@ -138,6 +138,36 @@ animation-iteration-count: infinite;    // Or an arbitrary number
 }
 ```
 
+### Responsive design
+
+Ensure that mobile scaling doesn't get in the way of desktop browsing:
+
+```
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+```
+
+The `float` css property moves an element to the left or right of its container element and allows inline elements to wrap around it.
+Great for showing images and have text wrap around it.
+
+`@media` selector allows for creating responsive applications. Example for detecting when screen is in portrait mode:
+
+```
+@media (orientation: portrait) {}
+```
+
+### Grid
+
+Each column autofills the parent element's width.
+Children that are resized to a minimum of 300 pixels and a maximum of one equal fractional unit (`1fr`) of the parents total width.
+A fractional unit is dynamically computed by splitting up the parent element's width into equal parts.
+
+```
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+grid-auto-rows: 300px;
+grid-gap: 1em;
+```
+
 ## React
 
 Interesting things I have learned about React
