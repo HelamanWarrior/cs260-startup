@@ -85,6 +85,34 @@ Interesting things I have learned about AWS
 - **Validation:** Use attributes like `required`, `minlength`, and `pattern` to ensure data is formatted correctly before submission.
 - **Security:** Always use `POST` method for forms that handle sensitive user data.
 
+## CSS
+
+### Animations
+
+Defining an animation on an element looks like this:
+
+```
+animation-name: somename;               // Name of the animation (used when calling @keyframes property)
+animation-duration: 3s;                 // Number in seconds
+animation-iteration-count: infinite;    // Or an arbitrary number
+```
+
+```
+@keyframes demo {
+  from {
+    font-size: 0vh;
+  }
+
+  95% {
+    font-size: 28vh;
+  }
+
+  to {
+    font-size: 30vh;
+  }
+}
+```
+
 ## React
 
 Interesting things I have learned about React
