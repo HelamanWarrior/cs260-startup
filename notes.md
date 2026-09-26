@@ -87,6 +87,31 @@ Interesting things I have learned about AWS
 
 ## CSS
 
+### Fonts
+
+Importing local fonts:
+
+```
+@font-face {
+  font-family: 'Quicksand';
+  src: url('https://cs260.click/fonts/quicksand.ttf');
+}
+
+p {
+  font-family: Quicksand;
+}
+```
+
+Retrieving fonts from remote:
+
+```
+@import url('https://fonts.googleapis.com/css2?family=Rubik Microbe&display=swap');
+
+p {
+  font-family: 'Rubik Microbe';
+}
+```
+
 ### Animations
 
 Defining an animation on an element looks like this:
