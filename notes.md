@@ -168,6 +168,15 @@ grid-auto-rows: 300px;
 grid-gap: 1em;
 ```
 
+### Flex
+
+- **header** - `flex: 0 80px` - Zero means it will not grow and 80px means it has a starting basis height of 80 pixels. This creates a fixed sized box.
+- **main** - `flex: 1` - One means it will get one fractional unit of growth, and since it is the only child with a non-zero growth value, it will get all the remaining space.
+
+`flex-direction`: `row` or `column`;
+`align-items`: `center`;                // This centers items horizontal
+`justify-content`: `center`;            // This centers items vertically
+
 ## React
 
 Interesting things I have learned about React
