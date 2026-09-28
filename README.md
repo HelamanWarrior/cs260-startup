@@ -85,7 +85,7 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [x] I completed the prerequisites for this deliverable (Simon deployed, GitHub link, Git commits)
+- [x] I completed the prerequisites for this deliverable ([Simon deployed](https://simon.plug-world.com), GitHub link, Git commits)
 - [x] **HTML pages** - 4 HTML pages consisting of home, search, about, & my account.
 - [x] **Proper HTML element usage** - Nav bar uses navigation tags. Many structural tags used properly as well: header, footer, & input text field.
 - [x] **Links** - Links to each page in the navbar; link to the source-code, change password & logout links.
@@ -100,7 +100,7 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] I completed the prerequisites for this deliverable (Simon deployed, GitHub link, Git commits)
+- [x] I completed the prerequisites for this deliverable ([Simon deployed](https://simon.plug-world.com), GitHub link, Git commits)
 - [ ] **Visually appealing colors and layout. No overflowing elements.** - I did not complete this part of the deliverable.
 - [ ] **Use of a CSS framework** - I did not complete this part of the deliverable.
 - [ ] **All visual elements styled using CSS** - I did not complete this part of the deliverable.
