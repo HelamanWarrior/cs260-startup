@@ -101,12 +101,12 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
 - [x] I completed the prerequisites for this deliverable ([Simon deployed](https://simon.plug-world.com), GitHub link, Git commits)
-- [ ] **Visually appealing colors and layout. No overflowing elements.** - I did not complete this part of the deliverable.
-- [ ] **Use of a CSS framework** - I did not complete this part of the deliverable.
-- [ ] **All visual elements styled using CSS** - I did not complete this part of the deliverable.
-- [ ] **Responsive to window resizing using flexbox and/or grid display** - I did not complete this part of the deliverable.
-- [ ] **Use of a imported font** - I did not complete this part of the deliverable.
-- [ ] **Use of different types of selectors including element, class, ID, and pseudo selectors** - I did not complete this part of the deliverable.
+- [x] **Visually appealing colors and layout. No overflowing elements.** - Sky blue accents, looking good so far.
+- [x] **Use of a CSS framework** - I chose to use Tailwind :)
+- [x] **All visual elements styled using CSS** - Every element on the site has been stylized and the navigation is largely enhanced by it.
+- [x] **Responsive to window resizing using flexbox and/or grid display** - Navigation bar uses flex box, search bar also both are responsive to window resizes. About page uses the grid display.
+- [x] **Use of a imported font** - Using dm-sans and fraunces, they work pretty well together.
+- [x] **Use of different types of selectors including element, class, ID, and pseudo selectors** - Yep, I'm using them all, especially class selectors haha.
 
 ## 🚀 React part 1: Routing deliverable
 
