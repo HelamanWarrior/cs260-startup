@@ -1,6 +1,11 @@
+@import "@fontsource-variable/dm-sans";
+@import "@fontsource-variable/fraunces";
 @import "tailwindcss";
 
 @theme {
+  --font-sans: "DM Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces Variable", ui-serif, Georgia, serif;
+
   --animate-ripple: ripple 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
 
   @keyframes ripple {
@@ -12,5 +17,12 @@
       transform: scale(1.25);
       opacity: 0;
     }
+  }
+}
+
+@layer base {
+  h1,
+  h2 {
+    font-family: var(--font-display);
   }
 }

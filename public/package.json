@@ -11,6 +11,8 @@
   "keywords": [],
   "type": "commonjs",
   "dependencies": {
+    "@fontsource-variable/dm-sans": "^5.3.0",
+    "@fontsource-variable/fraunces": "^5.3.0",
     "@tailwindcss/cli": "^4.3.3",
     "@tailwindcss/vite": "^4.3.3",
     "tailwindcss": "^4.3.3",
