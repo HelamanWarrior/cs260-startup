@@ -5,23 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Liquid Notes</title>
     <link rel="stylesheet" href="/src/style.css">
-    <script type="module">
-      const btn = document.getElementById('record-btn');
-      const label = document.getElement.ById('record-label');
-
-      btn.addEventListener('click', () => {
-	const recording = btn.getAttribute('aria-pressed') === 'true'
-	btn.setAttribute('aria-pressed', String(!recording))
-	label.textContent = recording ? 'Record a Drop' : 'Stop'
-      })
-    </script>
   </head>
   <body class="bg-neutral-50 pb-24 text-neutral-900 antialiased">
+    <script type="module">
+      const btn = document.getElementById('record-btn')
+      const label = document.getElementById('record-label')
+    
+      btn.addEventListener('click', () => {
+        const recording = btn.getAttribute('aria-pressed') === 'true'
+        btn.setAttribute('aria-pressed', String(!recording))
+        label.textContent = recording ? 'Record a Drop' : 'Stop'
+      })
+    </script>
     <header class="mx-auto max-w-3xl px-4 pt-8 text-center sm:px-6 sm:pt-12">
     </header>
 
     <main class="group/main mx-auto flex max-w-3xl flex-col items-center px-4 py-8 text-center sm:px-6 sm:py-12">
-      <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">Home</h1>
+      <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">Liquid Notes</h1>
       <p class="mt-4 text-lg leading-relaxed text-neutral-600">
 	<em>Deepen your roots of knowledge</em>
       </p>
@@ -39,7 +39,7 @@
                sm:size-56">
 	<!-- Pulsing ripple while recording -->
 	<span class="absolute inset-0 hidden rounded-[50%_0_50%_50%] bg-red-400/50
-	       group-aria-pressed:block group-aria-pressed:animate-ping motion-reduce:animate-none"></span>
+	       group-aria-pressed:block group-aria-pressed:animate-ripple motion-reduce:animate-none"></span>
 
 	<!-- Counter-rotate the content so it stays upright -->
 	<span class="relative flex rotate-45 flex-col items-center gap-2 text-white">
