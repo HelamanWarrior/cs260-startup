@@ -9,12 +9,32 @@
   <body>
     <header>
       <h1>About</h1>
-      <nav>
-	<ul>
-	  <li><a href="/">Home</a></li>
-	  <li><a href="/search">Search</a></li>
-	  <li><a href="/about"><strong>About</strong></a></li>
-	  <li><a href="/account">[Username placeholder]</a></li>
+      <nav class="fixed bottom-4 left-1/2 z-50 -translate-x-1/2">
+	<ul class="flex items-center gap-1 rounded-full bg-white/70 p-1.5 shadow-lg ring-1 ring-black/10 backdrop-blur-md">
+	  <li>
+	    <a href="/"
+		class="block rounded-full px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-black/5 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white">
+	      Home
+	    </a>
+	  </li>
+	  <li>
+	    <a href="/search/"
+	       class="block rounded-full px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-black/5 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white">
+	      Search
+	    </a>
+	  </li>
+	  <li>
+	    <a href="/about/" aria-current="page"
+	      class="block rounded-full px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-black/5 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white">
+	      About
+	    </a>
+	  </li>
+	  <li>
+	    <a href="/account/"
+	      class="block rounded-full px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-black/5 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white">
+	      Account
+	    </a>
+	  </li>
 	</ul>
       </nav>
       <hr />
