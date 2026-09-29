@@ -55,6 +55,25 @@
     </main>
 
     <!-- Search bar, pinned above the nav -->
+    <form class="fixed inset-x-4 bottom-20 z-40 mx-auto flex max-w-2xl items-center gap-2 rounded-full
+		 bg-white/80 p-2 shadow-lg ring-1 ring-black/10 backdrop-blur-md
+		 focus-within:ring-2 focus-within:ring-sky-500">
+      <label for="search" class="sr-only">Search the forest of knowledge</label>
+      <input type="text" id="search" name="search" required minlength="4" maxlength="1000"
+	     placeholder="Search the forest of knowledge..."
+	     class="min-w-0 flex-1 bg-transparent px-4 py-3 text-base outline-none placeholder:text-neutral-400" />
+      <button type="submit"
+	      class="flex h-14 shrink-0 items-center gap-2 rounded-full bg-sky-600 px-6 text-lg font-semibold text-white
+		     shadow-md shadow-sky-600/30 transition hover:bg-sky-700 active:scale-95
+		     focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-300 sm:px-8">
+	<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+	     class="size-5" aria-hidden="true">
+	  <circle cx="11" cy="11" r="7" />
+	  <path d="m20 20-3.5-3.5" />
+	</svg>
+	Search
+      </button>
+    </form>
 
     <nav class="fixed bottom-4 left-1/2 z-50 -translate-x-1/2">
       <ul class="flex items-center gap-1 rounded-full bg-white/70 p-1.5 shadow-lg ring-1 ring-black/10 backdrop-blur-md">
