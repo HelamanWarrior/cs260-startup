@@ -54,10 +54,26 @@ TRANSCRIPT:
 "[ transcript ]"
 
 OUTPUT REQUIREMENTS:
+## Markdown Frontmatter
 1. Title: A concise, highly specific title (max 6 words) that captures the core subject.
 2. Summary: A dense 2-3 sentence overview capturing key decisions, topics, and actionable items.
-3. Tags: 3 to 7 hierarchical or thematic tags. Include a mix of broad categories (e.g., #project, #idea) and specific sub-topics (e.g., #machine-learning, #budget-2026).
-4. Entities & Concepts: A comma-separated list of key proper nouns, distinct tools, projects, or recurring themes mentioned, optimized for finding conceptual overlaps with other notes.
+3. Tags: 3 to 7 hierarchical or thematic tags. Include a mix of broad categories (e.g., project, idea) and specific sub-topics (e.g., machine-learning, budget-2026).
+4. Keywords: A comma-separated list of key proper nouns, distinct tools, projects, or recurring themes mentioned, optimized for finding conceptual overlaps with other notes.
+## Note Contents
+1. Provide me with the exact content of the transcript.
+2. Provide formatting, create paragraphs, headings where appropriate, introduce bold and italics sparingly and when necessary.
+3. Fix any grammatical or spelling mistakes. If something is repeated or could be phrased a bit less long-winded, please shorten it, but make sure it clearly captures the original idea or thought.
+4. Keep the original perspective, if the author is talking in first-person, leave that perspective in the output.
+This is the precise format you are to copy:
+```
+---
+title: ""
+summary: ""
+tags: [""]
+keywords: [""]
+---
+Note contents
+```
 ```
 
 ## AWS
