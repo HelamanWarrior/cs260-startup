@@ -65,7 +65,6 @@ OUTPUT REQUIREMENTS:
 3. Fix any grammatical or spelling mistakes. If something is repeated or could be phrased a bit less long-winded, please shorten it, but make sure it clearly captures the original idea or thought.
 4. Keep the original perspective, if the author is talking in first-person, leave that perspective in the output.
 This is the precise format you are to copy:
-```
 ---
 title: ""
 summary: ""
@@ -73,7 +72,6 @@ tags: [""]
 keywords: [""]
 ---
 Note contents
-```
 ```
 
 ## AWS
