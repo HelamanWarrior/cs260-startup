@@ -194,3 +194,10 @@ grid-gap: 1em;
 ## React
 
 Interesting things I have learned about React
+
+## NodeJS
+
+The purpose of the package.json file:
+1. Metadata about your project such as its name and the default entry JavaScript file.
+2. Commands (scripts) that you can execute to do things like run, test, or distribute your code.
+3. Packages that the project depends upon.
