@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Liquid Notes</title>
+    <link rel="stylesheet" href="/src/style.css">
+  </head>
+  <body class="bg-neutral-50 pb-24 text-neutral-900 antialiased">
+    <script type="module">
+      const btn = document.getElementById('record-btn')
+      const label = document.getElementById('record-label')
+    
+      btn.addEventListener('click', () => {
+        const recording = btn.getAttribute('aria-pressed') === 'true'
+        btn.setAttribute('aria-pressed', String(!recording))
+        label.textContent = recording ? 'Record a Drop' : 'Stop'
+      })
+    </script>
+
+    <main class="group/main mx-auto flex max-w-3xl flex-col items-center px-4 py-8 text-center sm:px-6 sm:py-12">
+      <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">Liquid Notes</h1>
+      <p class="mt-4 text-lg leading-relaxed text-neutral-600">
+	<em>Deepen your roots of knowledge</em>
+      </p>
+
+      <!-- Raindrop record button -->
+      <div class="mt-8 flex justify-center pb-12 pt-12 sm:pb-14 sm:pt-16">
+      <button id="record-btn" type="button" aria-pressed="false"
+	class="group relative flex size-44 -rotate-45 items-center justify-center
+               rounded-[50%_0_50%_50%]
+               bg-linear-to-br from-sky-400 to-blue-600
+	       shadow-[0_0_48px_-4px] shadow-sky-500/50
+               transition duration-300 hover:scale-105 active:scale-95
+               focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-300
+               aria-pressed:from-rose-400 aria-pressed:to-red-600 aria-pressed:shadow-red-500/50
+               sm:size-56">
+	<!-- Pulsing ripple while recording -->
+	<span class="absolute inset-0 hidden rounded-[50%_0_50%_50%] bg-red-400/50
+	       group-aria-pressed:block group-aria-pressed:animate-ripple motion-reduce:animate-none"></span>
+
+	<!-- Counter-rotate the content so it stays upright -->
+	<span class="relative flex rotate-45 flex-col items-center gap-2 text-white">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+               class="size-9 sm:size-11" aria-hidden="true">
+            <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Z"/>
+            <path d="M19 11a1 1 0 1 0-2 0 5 5 0 0 1-10 0 1 1 0 1 0-2 0 7 7 0 0 0 6 6.92V21H8a1 1 0 1 0 0 2h8a1 1 0 1 0 0-2h-3v-3.08A7 7 0 0 0 19 11Z"/>
+          </svg>
+          <span id="record-label" class="text-sm font-semibold sm:text-base">Record a Drop</span>
+        </span>
+      </button>
+      </div>
+
+      <!-- Live transcription -->
+      <section class="w-full max-w-xl">
+	<div class="mb-3 flex items-center justify-center gap-2 text-sm font-medium text-neutral-500">
+	  <span class="size-2 rounded-full bg-neutral-300
+                   group-has-[[aria-pressed=true]]/main:animate-pulse
+                   group-has-[[aria-pressed=true]]/main:bg-red-500"></span>
+	  Live transcript
+	</div>
+	<div id="transcript" aria-live="polite"
+	  class="flex max-h-72 min-h-40 overflow-y-auto rounded-2xl bg-white p-6 text-center
+		 leading-relaxed text-neutral-700 shadow-sm ring-1 ring-black/5 sm:min-h-48 sm:p-8 sm:text-lg">
+	  <p class="m-auto">[Live transcription data goes here (websockets)]</p>
+	</div>
+      </section>
+    </main>
+
+    <nav class="fixed bottom-4 left-1/2 z-50 -translate-x-1/2">
+      <ul class="flex items-center gap-1 rounded-full bg-white/70 p-1.5 shadow-lg ring-1 ring-black/10 backdrop-blur-md">
+	<li>
+	  <a href="/" aria-current="page"
+	    class="block rounded-full px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-black/5 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white">
+	    Home
+	  </a>
+	</li>
+	<li>
+	  <a href="/search/"
+	     class="block rounded-full px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-black/5 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white">
+	    Search
+	  </a>
+	</li>
+	<li>
+	  <a href="/about/"
+	     class="block rounded-full px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-black/5 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white">
+	    About
+	  </a>
+	</li>
+	<li>
+	  <a href="/account/"
+	     class="block rounded-full px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-black/5 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white">
+	    Account
+	  </a>
+	</li>
+      </ul>
+    </nav>
+    <footer class="fixed bottom-4 right-4 z-40 hidden md:block">
+      <a href="https://github.com/HelamanWarrior/cs260-startup"
+	target="_blank" rel="noopener noreferrer"
+	class="block rounded-full bg-white/70 px-4 py-2 text-sm font-medium text-neutral-700 shadow-lg ring-1 ring-black/10 backdrop-blur-md transition hover:bg-white hover:text-neutral-900">
+	Source code
+      </a>
+    </footer>
+  </body>
+</html>
