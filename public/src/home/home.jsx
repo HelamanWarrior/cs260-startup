@@ -1,6 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export function Home() {
+  const [recording, setRecording] = useState(false);
+
+  const toggleRecord = () => {
+    setRecording(prev => !prev);
+  };
+
   return (
     <>
     <header class="mx-auto max-w-3xl px-4 pt-8 text-center sm:px-6 sm:pt-12">
@@ -12,7 +18,7 @@ export function Home() {
       </p>
 
       <div className="mt-8 flex justify-center pb-12 pt-12 sm:pb-14 sm:pt-16">
-      <button id="record-btn" type="button" aria-pressed="false"
+      <button id="record-btn" type="button" aria-pressed={recording} onClick={toggleRecord}
 	className="group relative flex size-44 -rotate-45 items-center justify-center
                rounded-[50%_0_50%_50%]
                bg-linear-to-br from-sky-400 to-blue-600
@@ -25,12 +31,13 @@ export function Home() {
 	       group-aria-pressed:block group-aria-pressed:animate-ripple motion-reduce:animate-none"></span>
 
 	<span className="relative flex rotate-45 flex-col items-center gap-2 text-white">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-               className="size-9 sm:size-11" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-9 sm:size-11" aria-hidden="true">
             <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Z"/>
             <path d="M19 11a1 1 0 1 0-2 0 5 5 0 0 1-10 0 1 1 0 1 0-2 0 7 7 0 0 0 6 6.92V21H8a1 1 0 1 0 0 2h8a1 1 0 1 0 0-2h-3v-3.08A7 7 0 0 0 19 11Z"/>
           </svg>
-          <span id="record-label" className="text-sm font-semibold sm:text-base">Record a Drop</span>
+          <span id="record-label" className="text-sm font-semibold sm:text-base">
+	    {recording ? 'Stop' : 'Record a Drop'}
+	  </span>
         </span>
       </button>
       </div>
