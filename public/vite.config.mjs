@@ -12,10 +12,10 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html'),
-        search: resolve(__dirname, 'search/index.html'),
-        about: resolve(__dirname, 'about/index.html'),
-        account: resolve(__dirname, 'account/index.html'),
+        main: resolve(import.meta.dirname, 'index.html'),
+        search: resolve(import.meta.dirname, 'search/index.html'),
+        about: resolve(import.meta.dirname, 'about/index.html'),
+        account: resolve(import.meta.dirname, 'account/index.html'),
       },
     },
   },
