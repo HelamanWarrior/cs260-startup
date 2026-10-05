@@ -2,8 +2,11 @@ import React from 'react';
 
 export function Home() {
   return (
-    <main className="group/main mx-auto flex max-w-3xl flex-col items-center px-4 py-8 text-center sm:px-6 sm:py-12">
+    <>
+    <header class="mx-auto max-w-3xl px-4 pt-8 text-center sm:px-6 sm:pt-12">
       <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Liquid Notes</h1>
+    </header>
+    <main className="group/main mx-auto flex max-w-3xl flex-col items-center px-4 py-8 text-center sm:px-6 sm:py-12">
       <p className="mt-4 text-lg leading-relaxed text-neutral-600">
 	<em>Deepen your roots of knowledge</em>
       </p>
@@ -46,5 +49,6 @@ export function Home() {
 	</div>
       </section>
     </main>
+    </>
   );
 }
