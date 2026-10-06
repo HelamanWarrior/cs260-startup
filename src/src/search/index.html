@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Liquid Notes - Search</title>
+    <link rel="stylesheet" href="/src/style.css">
+  </head>
+  <body class="bg-neutral-50 pb-24 text-neutral-900 antialiased">
+    <header class="mx-auto max-w-3xl px-4 pt-8 text-center sm:px-6 sm:pt-12">
+      <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">Search</h1>
+    </header>
+    <main class="mx-auto max-w-3xl space-y-10 px-4 py-8 sm:px-6 sm:py-12">
+      <!-- Answer -->
+      <section aria-live="polite">
+	<div class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6">
+	  <p class="leading-relaxed text-neutral-600">
+	    [Relevant response from
+            <a href="https://ai.google.dev/gemini-api/docs" target="_blank" rel="noopener noreferrer"
+             class="text-sky-600 underline underline-offset-2 hover:text-sky-800">LLM API</a>
+	    based on search query will appear here.]
+	  </p>
+	</div>
+      </section>
+
+      <!-- Previous drops -->
+      <section>
+	<details class="group">
+	  <summary class="flex cursor-pointer list-none items-center justify-between gap-3 rounded-2xl bg-white px-5 py-4
+			  shadow-sm ring-1 ring-black/5 transition hover:shadow-md
+			  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500
+			  [&::-webkit-details-marker]:hidden">
+	    <h2 class="text-xl font-semibold sm:text-2xl">
+	      View previous drops <span class="text-neutral-400">[database placeholder]</span>
+	    </h2>
+	    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+		 stroke-linecap="round" stroke-linejoin="round"
+		 class="size-5 shrink-0 text-neutral-500 transition-transform duration-200 group-open:rotate-180"
+		 aria-hidden="true">
+	      <path d="m6 9 6 6 6-6" />
+	    </svg>
+	  </summary>
+
+	  <div class="mt-4 space-y-4">
+	    <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 transition hover:shadow-md sm:p-6">
+	      <h3 class="font-semibold">A drop title</h3>
+	      <ul class="mt-2 flex flex-wrap gap-2" aria-label="Tags">
+	        <li class="rounded-full bg-sky-50 px-2.5 py-0.5 text-xs font-medium text-sky-700">example #1</li>
+	        <li class="rounded-full bg-sky-50 px-2.5 py-0.5 text-xs font-medium text-sky-700">test</li>
+	      </ul>
+	      <p class="mt-3 text-sm leading-relaxed text-neutral-600 sm:text-base">
+	        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+	      </p>
+	    </article>
+	    <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 transition hover:shadow-md sm:p-6">
+	      <h3 class="font-semibold">Another drop title</h3>
+	      <ul class="mt-2 flex flex-wrap gap-2" aria-label="Tags">
+	        <li class="rounded-full bg-sky-50 px-2.5 py-0.5 text-xs font-medium text-sky-700">example #2</li>
+	        <li class="rounded-full bg-sky-50 px-2.5 py-0.5 text-xs font-medium text-sky-700">test</li>
+	      </ul>
+	      <p class="mt-3 text-sm leading-relaxed text-neutral-600 sm:text-base">
+	        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+	      </p>
+	    </article>
+	  </div>
+	</details>
+      </section>
+    </main>
+
+    <!-- Search bar, pinned above the nav -->
+    <form class="fixed inset-x-4 bottom-20 z-40 mx-auto flex max-w-2xl items-center gap-2 rounded-full
+		 bg-white/80 p-2 shadow-lg ring-1 ring-black/10 backdrop-blur-md
+		 focus-within:ring-2 focus-within:ring-sky-500">
+      <label for="search" class="sr-only">Search the forest of knowledge</label>
+      <input type="text" id="search" name="search" required minlength="4" maxlength="1000"
+	     placeholder="Search the forest of knowledge..."
+	     class="min-w-0 flex-1 bg-transparent px-4 py-3 text-base outline-none placeholder:text-neutral-400" />
+
+      <!-- Voice button -->
+      <button id="mic-btn" type="button" aria-pressed="false" aria-label="Voice search"
+	      class="group relative flex size-11 shrink-0 items-center justify-center rounded-full text-neutral-600
+		     transition hover:bg-black/5 active:scale-95
+		     focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-300
+		     aria-pressed:bg-red-500 aria-pressed:text-white sm:size-12">
+	<!-- pulsing ripple while listening -->
+      	<span class="absolute inset-0 hidden rounded-full bg-red-400
+      	  	   group-aria-pressed:block group-aria-pressed:animate-ripple motion-reduce:animate-none"></span>
+      	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+      	     class="relative size-6" aria-hidden="true">
+      	  <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Z"/>
+      	  <path d="M19 11a1 1 0 1 0-2 0 5 5 0 0 1-10 0 1 1 0 1 0-2 0 7 7 0 0 0 6 6.92V21H8a1 1 0 1 0 0 2h8a1 1 0 1 0 0-2h-3v-3.08A7 7 0 0 0 19 11Z"/>
+      	</svg>
+      </button>
+
+      <button type="submit"
+	      class="flex h-14 shrink-0 items-center gap-2 rounded-full bg-sky-600 px-5 text-lg font-semibold text-white
+		     shadow-md shadow-sky-600/30 transition hover:bg-sky-700 active:scale-95
+		     focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-300 sm:px-8">
+	<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+	     class="hidden size-5 sm:block" aria-hidden="true">
+	  <circle cx="11" cy="11" r="7" />
+	  <path d="m20 20-3.5-3.5" />
+	</svg>
+	Search
+      </button>
+    </form>
+
+    <nav class="fixed bottom-4 left-1/2 z-50 -translate-x-1/2">
+      <ul class="flex items-center gap-1 rounded-full bg-white/70 p-1.5 shadow-lg ring-1 ring-black/10 backdrop-blur-md">
+	<li>
+	  <a href="/"
+	     class="block rounded-full px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-black/5 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white">
+	    Home
+	  </a>
+	</li>
+	<li>
+	  <a href="/search/" aria-current="page"
+			     class="block rounded-full px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-black/5 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white">
+	    Search
+	  </a>
+	</li>
+	<li>
+	  <a href="/about/"
+	     class="block rounded-full px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-black/5 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white">
+	    About
+	  </a>
+	</li>
+	<li>
+	  <a href="/account/"
+	     class="block rounded-full px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-black/5 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white">
+	    Account
+	  </a>
+	</li>
+      </ul>
+    </nav>
+    <footer class="fixed bottom-4 right-4 z-40 hidden md:block">
+      <a href="https://github.com/HelamanWarrior/cs260-startup"
+	 target="_blank" rel="noopener noreferrer"
+			 class="block rounded-full bg-white/70 px-4 py-2 text-sm font-medium text-neutral-700 shadow-lg ring-1 ring-black/10 backdrop-blur-md transition hover:bg-white hover:text-neutral-900">
+	Source code
+      </a>
+    </footer>
+  </body>
+</html>
