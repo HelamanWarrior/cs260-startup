@@ -10,14 +10,14 @@ export function Account() {
       <form action="#" method="POST"
 	    className="mx-auto w-full max-w-md space-y-5 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5 sm:p-8">
 	<div>
-	  <label for="username" className="block text-sm font-medium text-neutral-700">Username</label>
+	  <label htmlFor="username" className="block text-sm font-medium text-neutral-700">Username</label>
 	  <input type="text" id="username" name="username" required autocomplete="username"
 		 className="mt-1.5 block w-full rounded-xl bg-neutral-50 px-4 py-3 text-base ring-1 ring-black/10
 			placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-sky-500" />
 	</div>
 
 	<div>
-	  <label for="password" className="block text-sm font-medium text-neutral-700">Password</label>
+	  <label htmlFor="password" className="block text-sm font-medium text-neutral-700">Password</label>
 	  <input type="password" id="password" name="password" required autocomplete="current-password"
 		 className="mt-1.5 block w-full rounded-xl bg-neutral-50 px-4 py-3 text-base ring-1 ring-black/10
 			placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-sky-500" />
