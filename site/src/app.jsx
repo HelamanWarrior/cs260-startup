@@ -29,19 +29,19 @@ export default function App() {
               </NavLink>
             </li>
             <li>
-              <NavLink to="search"
+              <NavLink to="/search"
                  className="block rounded-full px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-black/5 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white">
                 Search
               </NavLink>
             </li>
             <li>
-              <NavLink to="about"
+              <NavLink to="/about"
                  className="block rounded-full px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-black/5 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white">
                 About
               </NavLink>
             </li>
             <li>
-              <NavLink to="account"
+              <NavLink to="/account"
                  className="block rounded-full px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-black/5 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white">
                 Account
               </NavLink>
