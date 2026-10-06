@@ -9,7 +9,7 @@ export function Home() {
 
   return (
     <>
-    <header class="mx-auto max-w-3xl px-4 pt-8 text-center sm:px-6 sm:pt-12">
+    <header className="mx-auto max-w-3xl px-4 pt-8 text-center sm:px-6 sm:pt-12">
       <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Liquid Notes</h1>
     </header>
     <main className="group/main mx-auto flex max-w-3xl flex-col items-center px-4 py-8 text-center sm:px-6 sm:py-12">
