@@ -1,18 +1,22 @@
 import { useState } from "react";
 
+import Typewriter from '../components/Typewriter';
+
 export function Search() {
   const [listening, setListening] = useState(false);
+  const [query, setQuery] = useState("");
+  const [submitted, setSubmitted] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); // stop the page reload
+    const q = query.trim();
+    setSubmitted(query.trim());
+    console.log("Submitted:", q); // replace with search functionality later
+  };
 
   return (
     <>
     <main className="mx-auto max-w-3xl space-y-10 px-4 py-8 sm:px-6 sm:py-12">
-      <section aria-live="polite">
-	<div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6">
-	  <p className="leading-relaxed text-neutral-600">
-	  </p>
-	</div>
-      </section>
-
       <section>
 	<details className="group">
 	  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-2xl bg-white px-5 py-4 shadow-sm ring-1 ring-black/5 transition hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 [&::-webkit-details-marker]:hidden">
@@ -51,17 +55,28 @@ export function Search() {
 	  </div>
 	</details>
       </section>
+
+      <section aria-live="polite">
+	<div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6">
+	  <p className="leading-relaxed text-neutral-600">
+	    {submitted !== "" && <Typewriter text={"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc condimentum justo quis quam consequat tincidunt. Curabitur ac tellus nec felis imperdiet posuere in vitae risus. In hac habitasse platea dictumst. Sed finibus felis mauris, in dapibus lorem imperdiet fermentum. Nunc tincidunt diam leo, id imperdiet eros porta nec. In non venenatis felis. Duis tincidunt quis nulla ac efficitur. Duis aliquam nibh dui, ut molestie ex vestibulum sit amet. Morbi a purus at odio commodo finibus. Etiam consequat tincidunt ipsum vitae tincidunt. Sed imperdiet, turpis at dapibus egestas, ipsum massa cursus enim, nec iaculis orci nulla id erat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Pellentesque mi libero, tempus in blandit eu, porttitor quis odio. Vestibulum sit amet malesuada erat, in aliquet felis. Mauris sollicitudin id erat eget tempor. Pellentesque non sagittis velit, quis mollis tortor. Sed quam eros, molestie vitae dignissim vitae, venenatis non lacus. Morbi cursus sed nisi id consectetur. Integer scelerisque iaculis mauris, sit amet tempus ipsum ullamcorper eget. Duis auctor ipsum felis, et pellentesque elit tincidunt id. Pellentesque a cursus massa. Nunc ornare tellus vitae elit suscipit, et mollis massa ullamcorper. Praesent dignissim mollis egestas. Fusce quis tristique nisi. Suspendisse potenti. Donec sit amet enim blandit, luctus augue vel, tristique arcu. Phasellus eget dignissim ligula, fringilla congue nisl. Phasellus nec volutpat elit."} speed={5} />}
+	  </p>
+	</div>
+      </section>
     </main>
 
-    <form className="fixed inset-x-4 bottom-20 z-40 mx-auto flex max-w-2xl items-center gap-2 rounded-full bg-white/80 p-2 shadow-lg ring-1 ring-black/10 backdrop-blur-md focus-within:ring-2 focus-within:ring-sky-500">
+    <form onSubmit={handleSubmit} role="search" className="fixed inset-x-4 bottom-20 z-40 mx-auto flex max-w-2xl items-center gap-2 rounded-full bg-white/80 p-2 shadow-lg ring-1 ring-black/10 backdrop-blur-md focus-within:ring-2 focus-within:ring-sky-500">
       <label htmlFor="search" className="sr-only">Search the forest of knowledge</label>
 
       <input 
 	type="text"
+	value={query}
+        onChange={(e) => setQuery(e.target.value)}
 	id="search"
 	name="search"
-	required minLength="4"
-	maxLength="1000"
+	required
+	minLength={4}
+	maxLength={1000}
 	placeholder="Search the forest of knowledge..."
 	className="min-w-0 flex-1 bg-transparent px-4 py-3 text-base outline-none placeholder:text-neutral-400"
       />
