@@ -1,16 +1,14 @@
-import React from 'react';
+import { useState } from "react";
 
 export function Search() {
+  const [listening, setListening] = useState(false);
+
   return (
     <>
     <main className="mx-auto max-w-3xl space-y-10 px-4 py-8 sm:px-6 sm:py-12">
       <section aria-live="polite">
 	<div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6">
 	  <p className="leading-relaxed text-neutral-600">
-	    [Relevant response from{' '}
-            <a href="https://ai.google.dev/gemini-api/docs" target="_blank" rel="noopener noreferrer"
-             className="text-sky-600 underline underline-offset-2 hover:text-sky-800">LLM API</a>
-	     {' '}based on search query will appear here.]
 	  </p>
 	</div>
       </section>
@@ -71,8 +69,9 @@ export function Search() {
       <button
 	id="mic-btn"
 	type="button"
-	aria-pressed="false"
+	aria-pressed={listening}
 	aria-label="Voice search"
+	onClick={() => setListening((l) => !l)}
 	className="group relative flex size-11 shrink-0 items-center justify-center rounded-full text-neutral-600 transition hover:bg-black/5 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-300 aria-pressed:bg-red-500 aria-pressed:text-white sm:size-12"
       >
 
