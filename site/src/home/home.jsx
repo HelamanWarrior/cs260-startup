@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import Typewriter from '../components/Typewriter';
+
 export function Home() {
   const [recording, setRecording] = useState(false);
 
@@ -52,7 +54,7 @@ export function Home() {
 	<div id="transcript" aria-live="polite"
 	  className="flex max-h-72 min-h-40 overflow-y-auto rounded-2xl bg-white p-6 text-center
 		 leading-relaxed text-neutral-700 shadow-sm ring-1 ring-black/5 sm:min-h-48 sm:p-8 sm:text-lg">
-	  <p className="m-auto">[Live transcription data goes here (websockets)]</p>
+	  <p className="m-auto">{ recording && <Typewriter text="Testing, testing 1... 2... 3... Is this thing on? Oh, it looks like it is recording, it's writing what I'm saying..." speed={60} /> }</p>
 	</div>
       </section>
     </main>
