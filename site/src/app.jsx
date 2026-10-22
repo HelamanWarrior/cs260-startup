@@ -7,7 +7,70 @@ import { Search } from './search/search';
 import { About } from './about/about';
 import { Account } from './account/account';
 
+function Icon({ children }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+    	viewBox="0 0 24 24"
+    	fill="none"
+    	stroke="currentColor"
+    	strokeWidth="1.8"
+    	strokeLinecap="round"
+    	strokeLinejoin="round"
+    	className="size-6"
+    	aria-hidden="true"
+    >
+    {children}
+    </svg>
+  );
+}
+
+const links = [
+  {
+    to: '/home',
+    label: 'Home',
+    icon: (
+      <Icon>
+	<path d="M3 10.5 12 3l9 7.5" />
+	<path d="M5 9.5V20h5v-6h4v6h5V9.5" />
+      </Icon>
+    ),
+  },
+  {
+    to: '/search',
+    label: 'Search',
+    icon: (
+      <Icon>
+        <circle cx="11" cy="11" r="7" />
+	<path d="m20 20-3.5-3.5" />
+      </Icon>
+    ),
+  },
+  {
+    to: '/about',
+    label: 'About',
+    icon: (
+      <Icon>
+	<circle cx="12" cy="12" r="9" />
+        <path d="M12 11v5" />
+	<path d="M12 8h.01" />
+      </Icon>
+    ),
+  },
+  {
+    to: '/account',
+    label: 'Account',
+    icon: (
+      <Icon>
+	<circle cx="12" cy="8" r="4" />
+	<path d="M4 20c0-3.5 3.6-6 8-6s8 2.5 8 6" />
+      </Icon>
+    ),
+  },
+];
+
 export default function App() {
+
   return (
     <BrowserRouter>
       <div className="bg-neutral-50 pb-24 text-neutral-900 antialiased">
@@ -20,34 +83,27 @@ export default function App() {
 	  <Route path='*' element={<NotFound />} />
 	</Routes>
 
-        <nav className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2">
-          <ul className="flex items-center gap-1 rounded-full bg-white/70 p-1.5 shadow-lg ring-1 ring-black/10 backdrop-blur-md">
-            <li>
-              <NavLink to="/home"
-                className="block rounded-full px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-black/5 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white">
-                Home
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/search"
-                 className="block rounded-full px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-black/5 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white">
-                Search
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/about"
-                 className="block rounded-full px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-black/5 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white">
-                About
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/account"
-                 className="block rounded-full px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-black/5 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white">
-                Account
-              </NavLink>
-            </li>
-          </ul>
-        </nav>
+        <nav
+	  aria-label="Main"
+	  className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 z-50 -translate-x-1/2"
+	>
+          <ul className="flex items-center gap-1.5 rounded-full bg-white/70 p-2 shadow-lg ring-1 ring-black/10 backdrop-blur-md">
+	    {links.map(({ to, label, icon }) => (
+	      <li key={to}>
+		<NavLink
+		  to={to}
+		  title={label}
+		  className="flex h-12 w-16 items-center justify-center rounded-full text-neutral-700 transition
+			     hover:bg-black/5 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-300
+			     aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white"
+		>
+		  {icon}
+		  <span className="sr-only">{label}</span>
+		</NavLink>
+	      </li>
+	    ))}
+	  </ul>
+	</nav>
         <footer className="fixed bottom-4 right-4 z-40 hidden md:block">
           <a href="https://github.com/HelamanWarrior/cs260-startup"
             target="_blank" rel="noopener noreferrer"
