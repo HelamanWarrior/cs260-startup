@@ -125,13 +125,12 @@ export function Search() {
 
       <button
 	type="submit"
-	className="flex h-14 shrink-0 items-center gap-2 rounded-full bg-sky-600 px-5 text-lg font-semibold text-white shadow-md shadow-sky-600/30 transition hover:bg-sky-700 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-300 sm:px-8"
+	className="flex h-14 w-16 shrink-0 items-center justify-center rounded-full bg-sky-600 text-white shadow-md shadow-sky-600/30 transition hover:bg-sky-700 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-300 sm:w-20"
       >
-	<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="hidden size-5 sm:block" aria-hidden="true">
+	<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="size-6" aria-hidden="true">
 	  <circle cx="11" cy="11" r="7" />
-	  <path d="m20 20-3.5-3.5" />
-	</svg>
-	Search
+  	  <path d="m20 20-3.5-3.5" />
+  	</svg>
       </button>
     </form>
     </>
