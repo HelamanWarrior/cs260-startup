@@ -63,7 +63,7 @@ const links = [
     ),
   },
   {
-    to: '/account',
+    to: '/login',
     label: 'Account',
     authOnly: false,
     icon: (
@@ -86,11 +86,31 @@ export default function App() {
     <BrowserRouter>
       <div className="bg-neutral-50 pb-24 text-neutral-900 antialiased">
 	<Routes>
-	  <Route path='/' element={<Account />} />
+	  <Route path='/' element={
+	    <Login
+	      userName={userName}
+	      authState={authState}
+	      onAuthChange={(userName, authState) => {
+		setAuthState(authState);
+		setUserName(userName);
+	      }}
+	    />
+	    } exact
+	  />
 	  <Route path='/home' element={<Home />} />
 	  <Route path='/search' element={<Search />} />
 	  <Route path='/about' element={<About />} />
-	  <Route path='/account' element={<Account />} />
+	  <Route path='/login' element={
+	    <Login
+	      userName={userName}
+	      authState={authState}
+	      onAuthChange={(userName, authState) => {
+		setAuthState(authState);
+		setUserName(userName);
+	      }}
+	    />
+	    } exact
+	  />
 	  <Route path='*' element={<NotFound />} />
 	</Routes>
 

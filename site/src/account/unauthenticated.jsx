@@ -17,10 +17,16 @@ export function Unauthenticated(props) {
     props.onLogin(userName);
   }
 
+  function handleSubmit(e) {
+    e.preventDefault(); // stop the browser native POST + reload
+    loginUser();
+  }
+
   return (
     <>
-      <form action="#" method="POST"
-            className="mx-auto w-full max-w-md space-y-5 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5 sm:p-8">
+      <form onSubmit={handleSubmit}
+            className="mx-auto w-full max-w-md space-y-5 bg-white p-6 sm:p-8"
+      >
         <div>
           <label htmlFor="username" className="block text-sm font-medium text-neutral-700">Username</label>
           <input type="text" id="username" name="username" required autocomplete="username"
@@ -38,7 +44,7 @@ export function Unauthenticated(props) {
         </div>
       
         <button type="submit"
-		onclick={() => loginUser()} disabled={!userName || !password }
+		disabled={!userName || !password}
         	className="w-full rounded-full bg-sky-600 px-6 py-3.5 text-lg font-semibold text-white
         	       shadow-md shadow-sky-600/30 transition hover:bg-sky-700 active:scale-95
         	       focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-300">
