@@ -2,10 +2,12 @@ import React from 'react';
 import './style.css';
 
 import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
+import { Login } from './account/login';
 import { Home } from './home/home';
 import { Search } from './search/search';
 import { About } from './about/about';
 import { Account } from './account/account';
+import { AuthState } from './account/authState';
 
 function Icon({ children }) {
   return (
@@ -29,6 +31,7 @@ const links = [
   {
     to: '/home',
     label: 'Home',
+    authOnly: true,
     icon: (
       <Icon>
 	<path d="M3 10.5 12 3l9 7.5" />
@@ -39,6 +42,7 @@ const links = [
   {
     to: '/search',
     label: 'Search',
+    authOnly: true,
     icon: (
       <Icon>
         <circle cx="11" cy="11" r="7" />
@@ -49,6 +53,7 @@ const links = [
   {
     to: '/about',
     label: 'About',
+    authOnly: true,
     icon: (
       <Icon>
 	<circle cx="12" cy="12" r="9" />
@@ -60,6 +65,7 @@ const links = [
   {
     to: '/account',
     label: 'Account',
+    authOnly: false,
     icon: (
       <Icon>
 	<circle cx="12" cy="8" r="4" />
@@ -70,6 +76,11 @@ const links = [
 ];
 
 export default function App() {
+  const [userName, setUserName] = React.useState(localStorage.getItem('userName') || '');
+  const currentAuthState = userName ? AuthState.Authenticated : AuthState.Unauthenticated;
+  const [authState, setAuthState] = React.useState(currentAuthState);
+
+  const visibleLinks = links.filter((link) => !link.authOnly || authState === AuthState.Authenticated);
 
   return (
     <BrowserRouter>
@@ -88,7 +99,7 @@ export default function App() {
 	  className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 z-50 -translate-x-1/2"
 	>
           <ul className="flex items-center gap-1.5 rounded-full bg-white/70 p-2 shadow-lg ring-1 ring-black/10 backdrop-blur-md">
-	    {links.map(({ to, label, icon }) => (
+	    {visibleLinks.map(({ to, label, icon }) => (
 	      <li key={to}>
 		<NavLink
 		  to={to}
