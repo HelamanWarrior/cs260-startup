@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 import Typewriter from '../components/Typewriter';
 
@@ -12,6 +12,30 @@ export function Search() {
     const q = query.trim();
     setSubmitted(query.trim());
     console.log("Submitted:", q); // replace with search functionality later
+  };
+
+  const typingRef = useRef(null);
+
+  function typeIntoInput(text, setQuery, speed = 20) {
+    let i = 0;
+    const id = setInterval(() => {
+      i++;
+      setQuery(text.slice(0, i));
+      if (i >= text.length) clearInterval(id);
+    }, speed);
+    return () => clearInterval(id); // call to cancel
+  }
+
+  const handleMicClick = () => {
+    const next = !listening;
+    setListening(next);
+
+    typingRef.current?.(); // cancel any typing in progress
+
+    if (next) {
+      setQuery("");
+      typingRef.current = typeIntoInput("performing a voice search...", setQuery, 30);
+    }
   };
 
   return (
@@ -86,7 +110,7 @@ export function Search() {
 	type="button"
 	aria-pressed={listening}
 	aria-label="Voice search"
-	onClick={() => setListening((l) => !l)}
+	onClick={handleMicClick}
 	className="group relative flex size-11 shrink-0 items-center justify-center rounded-full text-neutral-600 transition hover:bg-black/5 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-300 aria-pressed:bg-red-500 aria-pressed:text-white sm:size-12"
       >
 
