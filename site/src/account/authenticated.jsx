@@ -1,11 +1,17 @@
-import React from 'react';
+import { useState } from 'react';
+import { ChangePassword } from './changePassword';
 
 export function Authenticated({ userName, onLogout }) {
+  const [changingPassword, setChangingPassword] = useState(false);
   const initial = userName?.trim()?.[0]?.toUpperCase() ?? '?';
 
   function logout() {
     localStorage.removeItem('userName');
     onLogout();
+  }
+
+  if (changingPassword) {
+    return <ChangePassword onBack={() => setChangingPassword(false)} />;
   }
 
   return (
@@ -31,6 +37,7 @@ export function Authenticated({ userName, onLogout }) {
       <div className="flex w-full flex-col gap-3 border-t border-neutral-100 pt-6">
 	<button
 	  type="button"
+          onClick={() => setChangingPassword(true)}
 	  className="w-full rounded-full bg-white px-6 py-3 text-base font-semibold text-sky-700
                      ring-1 ring-sky-600/30 transition hover:bg-sky-50 active:scale-95
                      focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-300"
