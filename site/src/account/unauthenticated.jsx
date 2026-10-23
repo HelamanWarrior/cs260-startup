@@ -50,6 +50,16 @@ export function Unauthenticated(props) {
         	       focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-300">
           Log In
         </button>
+
+	<button type="button"
+                onClick={() => createUser()}
+                disabled={!userName || !password}
+                className="w-full rounded-full bg-white px-6 py-3.5 text-lg font-semibold text-sky-700
+                           ring-1 ring-sky-600/30 transition hover:bg-sky-50 active:scale-95
+                           focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-300
+                           disabled:cursor-not-allowed disabled:opacity-50">
+          Create Account
+        </button>
       </form>
 
       <MessageDialog message={displayError} onHide={() => setDisplayError(null)} />

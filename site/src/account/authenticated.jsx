@@ -14,7 +14,10 @@ export function Authenticated(props) {
       <button className="text-sky-600 underline-offset-2 hover:underline">
 	Change password
       </button>
-      <button className="text-neutral-500 underline-offset-2 hover:text-red-600 hover:underline">
+      <button
+	onClick={() => logout()}
+	className="text-neutral-500 underline-offset-2 hover:text-red-600 hover:underline"
+      >
 	Log out
       </button>
     </section>     
