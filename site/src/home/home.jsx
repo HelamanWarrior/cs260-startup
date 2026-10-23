@@ -52,9 +52,9 @@ export function Home() {
         <div
           id="transcript"
           aria-live="polite"
-          className="h-28 overflow-y-auto rounded-2xl bg-white p-4 text-left leading-relaxed
+          className="h-28 overflow-y-auto rounded-2xl bg-white p-4 text-center leading-relaxed
                      text-neutral-700 shadow-sm ring-1 ring-black/5
-                     sm:h-36 sm:p-6 sm:text-lg"
+                     sm:h-30 sm:p-6 sm:text-lg"
         >
           {recording ? (
             <p>
