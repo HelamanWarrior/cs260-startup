@@ -1,27 +1,29 @@
-#!/bin/bash
+#!/bin/sh
 
-printf "Deploying React bundle startup to startup.plug-world.com\n"
+service="startup"
 
 # Step 1
-printf "Build the distribution package\n"
+printf "\n----> Build the distribution package\n"
 rm -rf build
 mkdir build
-npm install
-npm run build
-cp -rf dist/* build
+npm install # make sure vite is installed so that we can bundle
+npm run build # build the React front end
+cp -rf dist build/public # move the React front end to the target distribution
+cp service/*.js build # move the back end service to the target distribution
+cp service/*.json build
 
 # Step 2
-printf "Clearing out previous distribution on the target\n"
-ssh parker@192.168.1.196 << ENDSSH
-rm -rf /home/parker/Docker/Swag/config/www/liquidnotes/
-mkdir -p /home/parker/Docker/Swag/config/www/liquidnotes
+printf "\n----> Clearing out previous distribution on the target\n"
+ssh parker@freenas.home.lan << ENDSSH
+rm -rf ~/Docker/cs260/services/${service}
+mkdir -p ~/Docker/cs260/services/${service}
 ENDSSH
 
 # Step 3
-printf "Copy the distribution package to the target\n"
-scp -r build/* parker@192.168.1.196:/home/parker/Docker/Swag/config/www/liquidnotes
+printf "\n----> Copy the distribution package to the target\n"
+scp -r build/* parker@freenas.home.lan:~/Docker/cs260/services/${service}
 
-# Step 4 
-printf "Removing local copy of the distribution package\n"
+# Step 4
+printf "\n----> Removing local copy of the distribution package\n"
 rm -rf build
 rm -rf dist
