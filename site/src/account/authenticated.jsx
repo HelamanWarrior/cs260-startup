@@ -6,8 +6,16 @@ export function Authenticated({ userName, onLogout }) {
   const initial = userName?.trim()?.[0]?.toUpperCase() ?? '?';
 
   function logout() {
-    localStorage.removeItem('userName');
-    onLogout();
+    fetch(`/api/auth/logout`, {
+      method: 'delete',
+    })
+      .catch(() => {
+	// Logout failed. Assuming offline
+      })
+      .finally(() => {
+	localStorage.removeItem('userName');
+	onLogout();
+      });
   }
 
   if (changingPassword) {
