@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useTranscription } from '../components/useTranscription';
+import { useCaptionWindow } from '../components/useCaptionWindow';
 
 import Typewriter from '../components/Typewriter';
 
@@ -7,6 +8,7 @@ const DROP_PATH = 'M50 4C58 24 92 52 92 82a42 42 0 0 1-84 0C8 52 42 24 50 4Z';
 
 export function Home() {
   const { recording, committed, tentative, status, toggleRecord } = useTranscription();
+
   const STATUS_MESSAGES = {
     busy: 'Server busy. Try again in a moment.',
     timeout: "You've reached the 30-minute recording limit.",
@@ -29,6 +31,7 @@ export function Home() {
 
   // Transcription box
   const boxRef = useRef(null);
+  const visibleText = useCaptionWindow(committed, boxRef);
   useEffect(() => {
     const el = boxRef.current;
     if (el) el.scrollTop = el.scrollHeight;
@@ -62,24 +65,25 @@ export function Home() {
 
         <div
           id="transcript"
-	  ref={boxRef}
           aria-live="polite"
           className="h-28 overflow-y-auto rounded-2xl bg-white p-4 text-center leading-relaxed
                      text-neutral-700 shadow-sm ring-1 ring-black/5
                      sm:h-30 sm:p-6 sm:text-lg"
         >
-	  {committed || tentative ? (
-	   <p>
-  	     {committed}
-  	     <span className="opacity-50">{tentative}</span>
-  	   </p>
-  	 ) : (
-  	   <p className="text-neutral-400">
-  	     {recording
-  	       ? 'Listening…'
-  	       : 'Tap the drop and start talking. Your words will appear here.'}
-  	   </p>
-	 )}
+	  <div ref={boxRef} className="h-[2lh] overflow-hidden">
+	    {visibleText || tentative ? (
+	     <p>
+  	       {visibleText}
+  	       <span className="opacity-50">{tentative}</span>
+  	     </p>
+	    ) : (
+  	     <p className="text-neutral-400">
+  	       {recording
+  	         ? 'Listening…'
+  	         : 'Tap the drop and start talking. Your words will appear here.'}
+  	     </p>
+	    )}
+	  </div>
         </div>
       </section>
 
