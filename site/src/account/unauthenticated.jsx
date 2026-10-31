@@ -44,7 +44,7 @@ export function Unauthenticated(props) {
       >
         <div>
           <label htmlFor="username" className="block text-sm font-medium text-neutral-700">Username</label>
-          <input type="text" id="username" name="username" required autocomplete="username"
+          <input type="text" id="username" name="username" required autoComplete="username"
 		 value={userName} onChange={(e) => setUserName(e.target.value)} placeholder="your@email.com"
         	 className="mt-1.5 block w-full rounded-xl bg-neutral-50 px-4 py-3 text-base ring-1 ring-black/10
         		placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-sky-500" />
@@ -52,7 +52,7 @@ export function Unauthenticated(props) {
       
         <div>
           <label htmlFor="password" className="block text-sm font-medium text-neutral-700">Password</label>
-          <input type="password" id="password" name="password" required autocomplete="current-password"
+          <input type="password" id="password" name="password" required autoComplete="current-password"
 		 onChange={(e) => setPassword(e.target.value)} placeholder="password"
         	 className="mt-1.5 block w-full rounded-xl bg-neutral-50 px-4 py-3 text-base ring-1 ring-black/10
         		placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-sky-500" />

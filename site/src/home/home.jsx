@@ -1,13 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { useTranscription } from '../components/useTranscription';
 
 import Typewriter from '../components/Typewriter';
 
 const DROP_PATH = 'M50 4C58 24 92 52 92 82a42 42 0 0 1-84 0C8 52 42 24 50 4Z';
 
 export function Home() {
-  const [recording, setRecording] = useState(false);
-
-  const toggleRecord = () => setRecording((prev) => !prev);
+  const { recording, committed, tentative, status, toggleRecord } = useTranscription();
+  const STATUS_MESSAGES = {
+    busy: 'Server busy. Try again in a moment.',
+    timeout: "You've reached the 30-minute recording limit.",
+    error: "Couldn't connect. Make sure you're logged in and try again.",
+  };
 
   // This screen is designed to fit in one viewport. Lock page-level scrolling
   // so anything the surrounding layout adds (spacers, padding) can't create a scrollbar.
@@ -22,6 +26,13 @@ export function Home() {
       body.style.overflow = prev.body;
     };
   }, []);
+
+  // Transcription box
+  const boxRef = useRef(null);
+  useEffect(() => {
+    const el = boxRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [committed, tentative]);
 
   return (
     <main
@@ -51,23 +62,24 @@ export function Home() {
 
         <div
           id="transcript"
+	  ref={boxRef}
           aria-live="polite"
           className="h-28 overflow-y-auto rounded-2xl bg-white p-4 text-center leading-relaxed
                      text-neutral-700 shadow-sm ring-1 ring-black/5
                      sm:h-30 sm:p-6 sm:text-lg"
         >
-          {recording ? (
-            <p>
-              <Typewriter
-                text="Testing, testing 1... 2... 3... Is this thing on? Oh, it looks like it is recording, it's writing what I'm saying..."
-                speed={60}
-              />
-            </p>
-          ) : (
-            <p className="text-neutral-400">
-              Tap the drop and start talking. Your words will appear here.
-            </p>
-          )}
+	  {committed || tentative ? (
+	   <p>
+  	     {committed}
+  	     <span className="opacity-50">{tentative}</span>
+  	   </p>
+  	 ) : (
+  	   <p className="text-neutral-400">
+  	     {recording
+  	       ? 'Listening…'
+  	       : 'Tap the drop and start talking. Your words will appear here.'}
+  	   </p>
+	 )}
         </div>
       </section>
 

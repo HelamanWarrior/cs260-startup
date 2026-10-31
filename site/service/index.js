@@ -122,7 +122,6 @@ function setAuthCookie(res, authToken) {
 }
 
 let shuttingDown = false;
-
 async function shutdown(server, wss) {
   if (shuttingDown) return;
   shuttingDown = true;
