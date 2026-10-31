@@ -35,10 +35,8 @@ function handleConnection(ws) {
 
   let stream;
   let queue = lease.session
-    .stream()
-    .then((s) => {
-      stream = s;
-    })
+    .stream({ family: { kind: 'parakeet', attContextRight: 1 } })
+    .then((s) => { stream = s; })
     .catch((err) => {
       console.error(err);
       ws.close();
