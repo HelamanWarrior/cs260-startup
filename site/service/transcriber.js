@@ -2,6 +2,7 @@ const path = require('path');
 
 let model;
 let busy = false;
+let idleWaiters = [];
 
 async function loadModel() {
   const { TranscribeModel } = await import('transcribe-cpp');
@@ -30,6 +31,8 @@ function acquireSession() {
 	  session.dispose();
 	} finally {
 	  busy = false;
+	  idleWaiters.forEach((resolve) => resolve());
+	  idleWaiters = [];
 	}
       },
     };
@@ -37,6 +40,10 @@ function acquireSession() {
     busy = false;
     throw err;
   }
+}
+
+function whenIdle() {
+  return busy ? new Promise((resolve) => idleWaiters.push(resolve)) : Promise.resolve();
 }
 
 function dispose() {

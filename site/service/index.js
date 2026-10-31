@@ -121,10 +121,31 @@ function setAuthCookie(res, authToken) {
   });
 }
 
+let shuttingDown = false;
+
+async function shutdown(server, wss) {
+  if (shuttingDown) return;
+  shuttingDown = true;
+
+  server.close(); // stop accepting new connections
+  for (const client of wss.clients) client.close(1001); // 1001 = going away
+
+  const idle = await Promise.race([
+    transcriber.whenIdle().then(() => true),
+    new Promise((resolve) => setTimeout(() => resolve(false), 5000)),
+  ]);
+  if (idle) transcriber.dispose();
+  process.exit(0);
+}
+
 async function start() {
   const server = http.createServer(app);
   const wss = new WebSocketServer({ noServer: true, maxPayload: 64 * 1024 });
   await transcriber.loadModel();
+
+  for (const sig of ['SIGINT', 'SIGTERM']) {
+    process.on(sig, () => shutdown(server, wss));
+  }
 
   server.on('upgrade', async (req, socket, head) => {
     if (req.url !== '/ws/transcribe') return socket.destroy();
@@ -156,9 +177,4 @@ async function start() {
 start().catch((err) => {
   console.error('Failed to start:', err);
   process.exit(1);
-});
-
-process.on('SIGINT', () => {
-  transcriber.dispose();
-  process.exit(0);
 });
