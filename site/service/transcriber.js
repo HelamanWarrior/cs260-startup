@@ -7,7 +7,11 @@ let idleWaiters = [];
 async function loadModel() {
   const { TranscribeModel } = await import('transcribe-cpp');
   model = await TranscribeModel.load(
-    path.join(__dirname, 'models', 'nemotron-speech-streaming-en-0.6b-Q8_0.gguf')
+    path.join(
+      __dirname,
+      'models',
+      'nemotron-speech-streaming-en-0.6b-Q8_0.gguf',
+    ),
   );
 }
 
@@ -25,15 +29,15 @@ function acquireSession() {
     return {
       session,
       release() {
-	if (released) return;
-	released = true;
-	try {
-	  session.dispose();
-	} finally {
-	  busy = false;
-	  idleWaiters.forEach((resolve) => resolve());
-	  idleWaiters = [];
-	}
+        if (released) return;
+        released = true;
+        try {
+          session.dispose();
+        } finally {
+          busy = false;
+          idleWaiters.forEach((resolve) => resolve());
+          idleWaiters = [];
+        }
       },
     };
   } catch (err) {
@@ -43,7 +47,9 @@ function acquireSession() {
 }
 
 function whenIdle() {
-  return busy ? new Promise((resolve) => idleWaiters.push(resolve)) : Promise.resolve();
+  return busy
+    ? new Promise((resolve) => idleWaiters.push(resolve))
+    : Promise.resolve();
 }
 
 function dispose() {
@@ -51,4 +57,4 @@ function dispose() {
   model = undefined;
 }
 
-module.exports = { loadModel, isLoaded, acquireSession, dispose };
+module.exports = { loadModel, isLoaded, acquireSession, whenIdle, dispose };

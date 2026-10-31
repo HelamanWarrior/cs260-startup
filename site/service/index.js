@@ -89,7 +89,7 @@ app.use((_req, res) => {
 
 // Default error handler
 app.use(function (err, req, res, next) {
-  res.status(500).send({ type: err.name, message: err.message });
+   res.status(err.status || 500).send({ type: err.name, message: err.message });
 });
 
 async function createUser(email, password) {
@@ -101,7 +101,7 @@ async function createUser(email, password) {
     token: uuid.v4(),
   };
   users.push(user);
-  
+
   return user;
 }
 
@@ -126,6 +126,7 @@ let shuttingDown = false;
 async function shutdown(server, wss) {
   if (shuttingDown) return;
   shuttingDown = true;
+  console.log('Shutting down...');
 
   server.close(); // stop accepting new connections
   for (const client of wss.clients) client.close(1001); // 1001 = going away
@@ -167,7 +168,9 @@ async function start() {
     }
 
     socket.removeListener('error', onSocketError);
-    wss.handleUpgrade(req, socket, head, (ws) => wss.emit('connection', ws, req));
+    wss.handleUpgrade(req, socket, head, (ws) =>
+      wss.emit('connection', ws, req),
+    );
   });
 
   wss.on('connection', handleConnection);
