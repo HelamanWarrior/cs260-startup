@@ -1,6 +1,7 @@
 const http = require('http');
 const { WebSocketServer } = require('ws');
 
+const { parseCookie } = require('cookie');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
 const express = require('express');
@@ -81,14 +82,14 @@ const verifyAuth = async (req, res, next) => {
   }
 };
 
-// Default error handler
-app.use(function (err, req, res, next) {
-  res.status(500).send({ type: err.name, message: err.message });
-});
-
 // Return the application's default page if the path is unknown
 app.use((_req, res) => {
   res.sendFile('index.html', { root: 'public' });
+});
+
+// Default error handler
+app.use(function (err, req, res, next) {
+  res.status(500).send({ type: err.name, message: err.message });
 });
 
 async function createUser(email, password) {
@@ -122,11 +123,29 @@ function setAuthCookie(res, authToken) {
 
 async function start() {
   const server = http.createServer(app);
-  const wss = new WebSocketServer({ noServer: true });
+  const wss = new WebSocketServer({ noServer: true, maxPayload: 64 * 1024 });
   await transcriber.loadModel();
 
-  server.on('upgrade', (req, socket, head) => {
+  server.on('upgrade', async (req, socket, head) => {
     if (req.url !== '/ws/transcribe') return socket.destroy();
+
+    const onSocketError = (err) => console.error(err);
+    socket.on('error', onSocketError);
+
+    let user;
+    try {
+      const cookies = parseCookie(req.headers.cookie || '');
+      user = await findUser('token', cookies[authCookieName]);
+    } catch (err) {
+      console.error(err);
+    }
+
+    if (!user) {
+      socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+      return socket.destroy();
+    }
+
+    socket.removeListener('error', onSocketError);
     wss.handleUpgrade(req, socket, head, (ws) => wss.emit('connection', ws, req));
   });
 
@@ -134,7 +153,10 @@ async function start() {
   server.listen(port, () => console.log(`Listening on port ${port}`));
 }
 
-start();
+start().catch((err) => {
+  console.error('Failed to start:', err);
+  process.exit(1);
+});
 
 process.on('SIGINT', () => {
   transcriber.dispose();

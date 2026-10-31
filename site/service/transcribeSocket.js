@@ -1,5 +1,8 @@
 const transcriber = require('./transcriber');
 
+const IDLE_MS = 15_000;		// no messages for 15s = client is gone
+const MAX_MS = 10 * 180_000;	// hard cap on one recording
+
 function handleConnection(ws) {
   ws.on('error', console.error);
 
@@ -16,6 +19,19 @@ function handleConnection(ws) {
   }
 
   const send = (obj) => ws.readyState === ws.OPEN && ws.send(JSON.stringify(obj));
+
+  let idleTimer;
+  const resetIdle = () => {
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => ws.terminate(), IDLE_MS);
+  };
+  resetIdle();
+
+  const maxTimer = setTimeout(() => {
+    send({ type: 'timeout' });
+    ws.close();
+  }, MAX_MS);
+
   let stream;
   let queue = lease.session
     .stream()
@@ -26,6 +42,7 @@ function handleConnection(ws) {
     });
 
   ws.on('message', (data, isBinary) => {
+    resetIdle();
     queue = queue
       .then(async () => {
 	if (isBinary) {
@@ -50,6 +67,8 @@ function handleConnection(ws) {
   });
 
   ws.on('close', async () => {
+    clearTimeout(idleTimer);
+    clearTimeout(maxTimer);
     try {
       await queue;
       if (stream) stream.reset();
