@@ -2,14 +2,16 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
 const express = require('express');
 const uuid = require('uuid');
+const path = require('path');
+
 const app = express();
 
 const authCookieName = 'token';
+const users = [];
+let model;
 
 // The service port. In production the front-end code is statically hosted by the service on the same port.
 const port = process.argv.length > 2 ? process.argv[2] : 3000;
-
-const users = [];
 
 // JSON body parsing using built-in middleware
 app.use(express.json());
@@ -58,6 +60,10 @@ apiRouter.delete('/auth/logout', async (req, res) => {
   }
   res.clearCookie(authCookieName);
   res.status(204).end();
+});
+
+apiRouter.get('/health', (_req, res) => {
+  res.json({ ok: true, modelLoaded: Boolean(model) });
 });
 
 // Middleware to verify that the user is authorized to call an endpoint
@@ -109,7 +115,19 @@ function setAuthCookie(res, authToken) {
   });
 }
 
-app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
+async function start() {
+  const { TranscribeModel } = await import('transcribe-cpp');
+  model = await TranscribeModel.load(
+    path.join(__dirname, 'models', 'nemotron-speech-streaming-en-0.6b-Q8_0.gguf')
+  );
+
+  app.listen(port, () => console.log(`Listening on port ${port}`));
+}
+
+start();
+
+process.on('SIGINT', () => {
+  if (model) model.dispose();
+  process.exit(0);
 });
 
