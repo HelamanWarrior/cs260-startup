@@ -1,3 +1,5 @@
+const http = require('http');
+const { WebSocketServer } = require('ws');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
 const express = require('express');
@@ -62,7 +64,8 @@ apiRouter.delete('/auth/logout', async (req, res) => {
   res.status(204).end();
 });
 
-apiRouter.get('/health', (_req, res) => {
+// Get TranscribeCPP backend health
+apiRouter.get('/health', async (_req, res) => {
   res.json({ ok: true, modelLoaded: Boolean(model) });
 });
 
@@ -115,13 +118,68 @@ function setAuthCookie(res, authToken) {
   });
 }
 
+let busy = false;
+
+function handleConnection(ws) {
+  if (busy) {
+    ws.send(JSON.stringify({ type: 'busy' }));
+    return ws.close();
+  }
+  busy = true; // synchronous, so two connections can't both pass the check
+
+  const send = (obj) => ws.readyState === ws.OPEN && ws.send(JSON.stringify(obj));
+  const session = model.createSession();
+  let stream;
+  let queue = session.stream().then((s) => { stream = s; });
+
+  ws.on('message', (data, isBinary) => {
+    queue = queue
+      .then(async () => {
+	if (isBinary) {
+	  const pcm = new Float32Array(
+	    data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength)
+	  );
+	  const update = await stream.feed(pcm);
+	  if (update.resultChanged) {
+	    const { committed, tentative } = stream.text;
+	    send({ type: 'transcript', committed, tentative });
+	  }
+	} else if (data.toString() === 'stop') {
+	  await stream.finalize();
+	  send({ type: 'final', text: stream.text.committed });
+	  ws.close();
+	}
+      })
+      .catch((err) => {
+	console.error(err);
+	ws.close();
+      });
+  });
+
+  ws.on('close', async () => {
+    await queue;
+    if (stream) stream.reset();
+    session.dispose();
+    busy = false;
+  });
+}
+
 async function start() {
   const { TranscribeModel } = await import('transcribe-cpp');
   model = await TranscribeModel.load(
     path.join(__dirname, 'models', 'nemotron-speech-streaming-en-0.6b-Q8_0.gguf')
   );
 
-  app.listen(port, () => console.log(`Listening on port ${port}`));
+  const server = http.createServer(app);
+  const wss = new WebSocketServer({ noServer: true });
+
+  server.on('upgrade', (req, socket, head) => {
+    if (req.url !== '/ws/transcribe') return socket.destroy();
+    wss.handleUpgrade(req, socket, head, (ws) => wss.emit('connection', ws, req));
+  });
+
+  wss.on('connection', handleConnection);
+  server.listen(port, () => console.log(`Listening on port ${port}`));
 }
 
 start();
@@ -130,4 +188,3 @@ process.on('SIGINT', () => {
   if (model) model.dispose();
   process.exit(0);
 });
-
