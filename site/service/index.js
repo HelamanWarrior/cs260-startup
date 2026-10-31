@@ -121,6 +121,7 @@ function setAuthCookie(res, authToken) {
 let busy = false;
 
 function handleConnection(ws) {
+  ws.on('error', console.error);
   if (busy) {
     ws.send(JSON.stringify({ type: 'busy' }));
     return ws.close();
@@ -128,9 +129,24 @@ function handleConnection(ws) {
   busy = true; // synchronous, so two connections can't both pass the check
 
   const send = (obj) => ws.readyState === ws.OPEN && ws.send(JSON.stringify(obj));
-  const session = model.createSession();
+
+  let session;
+  try {
+    session = model.createSession();
+  } catch (err) {
+    console.error(err);
+    busy = false;
+    return ws.close();
+  }
+
   let stream;
-  let queue = session.stream().then((s) => { stream = s; });
+  let queue = session
+    .stream()
+    .then((s) => { stream = s; })
+    .catch((err) => {
+      console.error(err);
+      ws.close();
+    });
 
   ws.on('message', (data, isBinary) => {
     queue = queue
@@ -157,10 +173,13 @@ function handleConnection(ws) {
   });
 
   ws.on('close', async () => {
-    await queue;
-    if (stream) stream.reset();
-    session.dispose();
-    busy = false;
+    try {
+      await queue;
+      if (stream) stream.reset();
+    } finally {
+      session.dispose();
+      busy = false;
+    }
   });
 }
 
