@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { startTranscription } from './transcribe';
 
-export function useTranscription() {
+export function useTranscription({ onError } = {}) {
   const stopRef = useRef(null);
   const startingRef = useRef(false);
   const [recording, setRecording] = useState(false);
   const [text, setText] = useState({ committed: '', tentative: '' });
-  const [status, setStatus] = useState('');
 
   // If the component unmounts mid-recording, shut everything down
   useEffect(() => () => { stopRef.current?.(); }, []);
@@ -20,12 +19,11 @@ export function useTranscription() {
     startingRef.current = true;
 
     setText({ committed: '', tentative: '' });
-    setStatus('');
     try {
       stopRef.current = await startTranscription({
 	onText: (committed, tentative) => setText({ committed, tentative }),
 	onFinal: (finalText) => setText({ committed: finalText, tentative: '' }),
-	onStatus: setStatus,
+	onStatus: (code) => onError?.(code),
 	onClose: () => {
 	  stopRef.current = null;
 	  setRecording(false);
@@ -33,7 +31,7 @@ export function useTranscription() {
       });
       setRecording(true);
     } catch (err) {
-      setStatus(err.message);
+      onError?.(err.name === 'NotAllowedError' ? 'mic-denied' : err.message);
     } finally {
       startingRef.current = false;
     }
@@ -43,7 +41,6 @@ export function useTranscription() {
     recording,
     committed: text.committed,
     tentative: text.tentative,
-    status,
     toggleRecord,
   };
 }
