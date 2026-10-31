@@ -1,16 +1,18 @@
 const http = require('http');
 const { WebSocketServer } = require('ws');
+
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
 const express = require('express');
 const uuid = require('uuid');
-const path = require('path');
+
+const transcriber = require('./transcriber');
+const { handleConnection } = require('./transcribeSocket');
 
 const app = express();
 
 const authCookieName = 'token';
 const users = [];
-let model;
 
 // The service port. In production the front-end code is statically hosted by the service on the same port.
 const port = process.argv.length > 2 ? process.argv[2] : 3000;
@@ -66,7 +68,7 @@ apiRouter.delete('/auth/logout', async (req, res) => {
 
 // Get TranscribeCPP backend health
 apiRouter.get('/health', async (_req, res) => {
-  res.json({ ok: true, modelLoaded: Boolean(model) });
+  res.json({ ok: true, modelLoaded: transcriber.isLoaded() });
 });
 
 // Middleware to verify that the user is authorized to call an endpoint
@@ -118,79 +120,10 @@ function setAuthCookie(res, authToken) {
   });
 }
 
-let busy = false;
-
-function handleConnection(ws) {
-  ws.on('error', console.error);
-  if (busy) {
-    ws.send(JSON.stringify({ type: 'busy' }));
-    return ws.close();
-  }
-  busy = true; // synchronous, so two connections can't both pass the check
-
-  const send = (obj) => ws.readyState === ws.OPEN && ws.send(JSON.stringify(obj));
-
-  let session;
-  try {
-    session = model.createSession();
-  } catch (err) {
-    console.error(err);
-    busy = false;
-    return ws.close();
-  }
-
-  let stream;
-  let queue = session
-    .stream()
-    .then((s) => { stream = s; })
-    .catch((err) => {
-      console.error(err);
-      ws.close();
-    });
-
-  ws.on('message', (data, isBinary) => {
-    queue = queue
-      .then(async () => {
-	if (isBinary) {
-	  const pcm = new Float32Array(
-	    data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength)
-	  );
-	  const update = await stream.feed(pcm);
-	  if (update.resultChanged) {
-	    const { committed, tentative } = stream.text;
-	    send({ type: 'transcript', committed, tentative });
-	  }
-	} else if (data.toString() === 'stop') {
-	  await stream.finalize();
-	  send({ type: 'final', text: stream.text.committed });
-	  ws.close();
-	}
-      })
-      .catch((err) => {
-	console.error(err);
-	ws.close();
-      });
-  });
-
-  ws.on('close', async () => {
-    try {
-      await queue;
-      if (stream) stream.reset();
-    } finally {
-      session.dispose();
-      busy = false;
-    }
-  });
-}
-
 async function start() {
-  const { TranscribeModel } = await import('transcribe-cpp');
-  model = await TranscribeModel.load(
-    path.join(__dirname, 'models', 'nemotron-speech-streaming-en-0.6b-Q8_0.gguf')
-  );
-
   const server = http.createServer(app);
   const wss = new WebSocketServer({ noServer: true });
+  await transcriber.loadModel();
 
   server.on('upgrade', (req, socket, head) => {
     if (req.url !== '/ws/transcribe') return socket.destroy();
@@ -204,6 +137,6 @@ async function start() {
 start();
 
 process.on('SIGINT', () => {
-  if (model) model.dispose();
+  transcriber.dispose();
   process.exit(0);
 });
