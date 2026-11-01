@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { startTranscription } from './transcribe';
 
-export function useTranscription({ onError } = {}) {
+export function useTranscription({ onError, onComplete } = {}) {
   const stopRef = useRef(null);
   const startingRef = useRef(false);
   const [recording, setRecording] = useState(false);
@@ -22,7 +22,10 @@ export function useTranscription({ onError } = {}) {
     try {
       stopRef.current = await startTranscription({
 	onText: (committed, tentative) => setText({ committed, tentative }),
-	onFinal: (finalText) => setText({ committed: finalText, tentative: '' }),
+	onFinal: (finalText) => {
+	  setText({ committed: finalText, tentative: '' });
+	  onComplete?.(finalText);
+	},
 	onStatus: (code) => onError?.(code),
 	onClose: () => {
 	  stopRef.current = null;

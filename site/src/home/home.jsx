@@ -2,24 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useTranscription } from '../components/useTranscription';
 import { useCaptionWindow } from '../components/useCaptionWindow';
+import { useNoteSaver } from '../components/useNoteSaver';
 import { MessageDialog } from '../components/messageDialog';
-import Typewriter from '../components/Typewriter';
 
 const DROP_PATH = 'M50 4C58 24 92 52 92 82a42 42 0 0 1-84 0C8 52 42 24 50 4Z';
 
 export function Home() {
-  const STATUS_MESSAGES = {
-    busy: 'Server busy. Try again in a moment.',
-    timeout: "You've reached the 30-minute recording limit.",
-    error: "Couldn't connect. Make sure you're logged in and try again.",
-    'mic-denied': 'Microphone access was blocked. Allow it in your browser and try again.',
-  };
-
-  const [displayError, setDisplayError] = useState(null);
-  const { recording, committed, tentative, toggleRecord } = useTranscription({
-    onError: (code) => setDisplayError(STATUS_MESSAGES[code] ?? code),
-  });
-
   // This screen is designed to fit in one viewport. Lock page-level scrolling
   // so anything the surrounding layout adds (spacers, padding) can't create a scrollbar.
   useEffect(() => {
@@ -33,6 +21,31 @@ export function Home() {
       body.style.overflow = prev.body;
     };
   }, []);
+
+  const STATUS_MESSAGES = {
+    busy: 'Server busy. Try again in a moment.',
+    timeout: "You've reached the 30-minute recording limit.",
+    error: "Couldn't connect. Make sure you're logged in and try again.",
+    'mic-denied': 'Microphone access was blocked. Allow it in your browser and try again.',
+    'undo-failed': "Unable to delete that note. Try again later.",
+  };
+
+  const [displayError, setDisplayError] = useState(null);
+
+  const { phase, save, retry, undo, dismiss } = useNoteSaver({
+    onError: (code) => setDisplayError(STATUS_MESSAGES[code] ?? code),
+  });
+
+  const { recording, committed, tentative, toggleRecord } = useTranscription({
+    onError: (code) => setDisplayError(STATUS_MESSAGES[code] ?? code),
+    onComplete: save,
+  });
+
+  function handleToggle() {
+    if (!recording) dismiss();
+    toggleRecord();
+  }
+  useEffect(() => console.log('note phase:', phase), [phase]);
 
   // Transcription box
   const boxRef = useRef(null);
@@ -106,7 +119,7 @@ export function Home() {
             id="record-btn"
             type="button"
             aria-pressed={recording}
-            onClick={toggleRecord}
+            onClick={handleToggle}
             className="group @container relative aspect-[100/140] w-[clamp(9rem,min(56vw,28dvh),20rem)]
                        transition duration-300 hover:scale-105 active:scale-95
                        focus-visible:outline-none"
@@ -173,6 +186,7 @@ export function Home() {
               </span>
             </span>
           </button>
+	  <button onClick={undo}>test undo</button>
         </div>
       </main>
 

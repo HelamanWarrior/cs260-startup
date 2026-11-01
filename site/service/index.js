@@ -14,6 +14,7 @@ const app = express();
 
 const authCookieName = 'token';
 const users = [];
+const notes = [];
 
 // The service port. In production the front-end code is statically hosted by the service on the same port.
 const port = process.argv.length > 2 ? process.argv[2] : 3000;
@@ -26,6 +27,17 @@ app.use(cookieParser());
 
 // Serve up the front-end static content hosting
 app.use(express.static('public'));
+
+// Middleware to verify that the user is authorized to call an endpoint
+const verifyAuth = async (req, res, next) => {
+  const user = await findUser('token', req.cookies[authCookieName]);
+  if (user) {
+    req.user = user;
+    next();
+  } else {
+    res.status(401).send({ msg: 'Unauthorized' });
+  }
+};
 
 // Router for service endpoints
 var apiRouter = express.Router();
@@ -72,15 +84,32 @@ apiRouter.get('/health', async (_req, res) => {
   res.json({ ok: true, modelLoaded: transcriber.isLoaded() });
 });
 
-// Middleware to verify that the user is authorized to call an endpoint
-const verifyAuth = async (req, res, next) => {
-  const user = await findUser('token', req.cookies[authCookieName]);
-  if (user) {
-    next();
-  } else {
-    res.status(401).send({ msg: 'Unauthorized' });
-  }
-};
+// Create a note
+apiRouter.post('/notes', verifyAuth, (req, res) => {
+  const text = String(req.body?.text ?? '').trim();
+  if (!text) return req.status(400).send({ msg: 'Empty note' });
+
+  const note = { id: uuid.v4(), owner: req.user.email, text, createdAt: Date.now() };
+  notes.push(note);
+  res.status(201).send({ id: note.id, createdAt: note.createdAt });
+});
+
+// List my notes, newest first
+apiRouter.get('/notes', verifyAuth, (req, res) => {
+  const mine = notes
+    .filter((n) => n.owner === req.user.email)
+    .map(({ id, text, createdAt }) => ({ id, text, createdAt }))
+    .reverse();
+  res.send(mine);
+});
+
+// Delete a note
+apiRouter.delete('/notes/:id', verifyAuth, (req, res) => {
+  const i = notes.findIndex((n) => n.id === req.params.id && n.owner === req.user.email);
+  if (i === -1) return res.status(404).send({ msg: 'Not found' });
+  notes.splice(i, 1);
+  res.status(204).end();
+});
 
 // Return the application's default page if the path is unknown
 app.use((_req, res) => {
