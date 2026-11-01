@@ -36,7 +36,7 @@ export function Home() {
 
   // Transcription box
   const boxRef = useRef(null);
-  const visibleText = useCaptionWindow(committed, boxRef);
+  const { text: visibleText, page } = useCaptionWindow(committed, boxRef);
   useEffect(() => {
     const el = boxRef.current;
     if (el) el.scrollTop = el.scrollHeight;
@@ -78,8 +78,15 @@ export function Home() {
           >
             <div ref={boxRef} className="h-[2lh] overflow-hidden">
               {visibleText || tentative ? (
-               <p>
-                 {visibleText}
+               <p key={page}>
+                 {visibleText
+		   .split(/\s+/)
+		   .filter(Boolean)
+		   .map((word, i) => (
+		     <span key={`${page}-${i}`} className="word-in">
+		      {word + ' '}
+		     </span>
+		 ))}
                  <span className="opacity-50">{tentative}</span>
                </p>
               ) : (
@@ -100,7 +107,7 @@ export function Home() {
             type="button"
             aria-pressed={recording}
             onClick={toggleRecord}
-            className="group @container relative aspect-[100/130] w-[clamp(9rem,min(56vw,28dvh),20rem)]
+            className="group @container relative aspect-[100/140] w-[clamp(9rem,min(56vw,28dvh),20rem)]
                        transition duration-300 hover:scale-105 active:scale-95
                        focus-visible:outline-none"
           >

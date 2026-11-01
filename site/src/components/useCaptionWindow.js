@@ -19,5 +19,5 @@ export function useCaptionWindow(text, boxRef) {
     prevLen.current = text.length;
   }, [text, boxRef]);
 
-  return text.slice(start).trimStart();
+  return { text: text.slice(start).trimStart(), page: start };
 }
