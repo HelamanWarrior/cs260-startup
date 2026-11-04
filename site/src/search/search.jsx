@@ -1,6 +1,7 @@
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import Typewriter from '../components/Typewriter';
+import NotesList from '../components/notesList';
 
 export function Search() {
   const [listening, setListening] = useState(false);
@@ -41,44 +42,7 @@ export function Search() {
   return (
     <>
     <main className="mx-auto max-w-3xl space-y-10 px-4 py-8 sm:px-6 sm:py-12">
-      <section>
-	<details className="group">
-	  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-2xl bg-white px-5 py-4 shadow-sm ring-1 ring-black/5 transition hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 [&::-webkit-details-marker]:hidden">
-	    <h2 className="text-xl font-semibold sm:text-2xl">
-	      View previous drops <span className="text-neutral-400">[database placeholder]</span>
-	    </h2>
-	    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
-		 strokeLinecap="round" strokeLinejoin="round"
-		 className="size-5 shrink-0 text-neutral-500 transition-transform duration-200 group-open:rotate-180"
-		 aria-hidden="true">
-	      <path d="m6 9 6 6 6-6" />
-	    </svg>
-	  </summary>
-
-	  <div className="mt-4 space-y-4">
-	    <article className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 transition hover:shadow-md sm:p-6">
-	      <h3 className="font-semibold">A drop title</h3>
-	      <ul className="mt-2 flex flex-wrap gap-2" aria-label="Tags">
-	        <li className="rounded-full bg-sky-50 px-2.5 py-0.5 text-xs font-medium text-sky-700">example #1</li>
-	        <li className="rounded-full bg-sky-50 px-2.5 py-0.5 text-xs font-medium text-sky-700">test</li>
-	      </ul>
-	      <p className="mt-3 text-sm leading-relaxed text-neutral-600 sm:text-base">
-	        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-	      </p>
-	    </article>
-	    <article className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 transition hover:shadow-md sm:p-6">
-	      <h3 className="font-semibold">Another drop title</h3>
-	      <ul className="mt-2 flex flex-wrap gap-2" aria-label="Tags">
-	        <li className="rounded-full bg-sky-50 px-2.5 py-0.5 text-xs font-medium text-sky-700">example #2</li>
-	        <li className="rounded-full bg-sky-50 px-2.5 py-0.5 text-xs font-medium text-sky-700">test</li>
-	      </ul>
-	      <p className="mt-3 text-sm leading-relaxed text-neutral-600 sm:text-base">
-	        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-	      </p>
-	    </article>
-	  </div>
-	</details>
-      </section>
+      <NotesList />
 
       <section aria-live="polite">
 	<div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6">
