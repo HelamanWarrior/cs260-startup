@@ -4,6 +4,7 @@ import { useTranscription } from '../components/useTranscription';
 import { useCaptionWindow } from '../components/useCaptionWindow';
 import { useNoteSaver } from '../components/useNoteSaver';
 import { MessageDialog } from '../components/messageDialog';
+import { NoteToast } from '../components/noteToast';
 
 const DROP_PATH = 'M50 4C58 24 92 52 92 82a42 42 0 0 1-84 0C8 52 42 24 50 4Z';
 
@@ -45,7 +46,6 @@ export function Home() {
     if (!recording) dismiss();
     toggleRecord();
   }
-  useEffect(() => console.log('note phase:', phase), [phase]);
 
   // Transcription box
   const boxRef = useRef(null);
@@ -186,11 +186,11 @@ export function Home() {
               </span>
             </span>
           </button>
-	  <button onClick={undo}>test undo</button>
         </div>
       </main>
 
       <MessageDialog message={displayError} onHide={() => setDisplayError(null)} />
+      <NoteToast phase={phase} onUndo={undo} onRetry={retry} onDismiss={dismiss} />
     </>
   );
 }
