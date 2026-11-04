@@ -21,7 +21,7 @@ export default function NotesList() {
       })
       .catch((err) => {
 	console.error(err);
-	if (!cancelled) setNotes(true);
+	if (!cancelled) setError(true);
       })
       .finally(() => {
 	if (!cancelled) setLoading(false);	
