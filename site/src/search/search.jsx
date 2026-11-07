@@ -1,12 +1,37 @@
 import { useEffect, useState, useRef } from "react";
 
-import Typewriter from '../components/Typewriter';
 import NotesList from '../components/notesList';
+import { useTranscription } from '../components/useTranscription';
+import { MessageDialog } from '../components/messageDialog';
+
+const STATUS_MESSAGES = {
+  busy: 'Server busy. Try again in a moment.',
+  timeout: "You've reached the 30-minute recording limit.",
+  error: "Couldn't connect. Make sure you're logged in and try again.",
+  'mic-denied': 'Microphone access was blocked. Allow it in your browser and try again.',
+};
 
 export function Search() {
-  const [listening, setListening] = useState(false);
-  const [query, setQuery] = useState("");
-  const [submitted, setSubmitted] = useState("");
+  const [query, setQuery] = useState('');
+  const [submitted, setSubmitted] = useState('');
+  const [displayError, setDisplayError] = useState(null);
+  const inputRef = useRef(null);
+  
+  const { recording, committed, tentative, toggleRecord } = useTranscription({
+    onError: (code) => setDisplayError(STATUS_MESSAGES[code] ?? code),
+  });
+
+  // Show live recording transcript in search box
+  useEffect(() => {
+    const text = `${committed}${tentative}`.trim();
+    if (text) setQuery(text);
+  }, [committed, tentative]);
+
+  // Keep the newest words in view as the text outgrows the box
+  useEffect(() => {
+    const el = inputRef.current;
+    if (recording && el) el.scrollLeft = el.scrollWidth;
+  }, [query, recording]);
 
   const handleSubmit = (e) => {
     e.preventDefault(); // stop the page reload
@@ -15,29 +40,10 @@ export function Search() {
     console.log("Submitted:", q); // replace with search functionality later
   };
 
-  const typingRef = useRef(null);
-
-  function typeIntoInput(text, setQuery, speed = 20) {
-    let i = 0;
-    const id = setInterval(() => {
-      i++;
-      setQuery(text.slice(0, i));
-      if (i >= text.length) clearInterval(id);
-    }, speed);
-    return () => clearInterval(id); // call to cancel
+  function handleToggle() {
+    if (!recording) dismiss();
+    toggleRecord();
   }
-
-  const handleMicClick = () => {
-    const next = !listening;
-    setListening(next);
-
-    typingRef.current?.(); // cancel any typing in progress
-
-    if (next) {
-      setQuery("");
-      typingRef.current = typeIntoInput("performing a voice search...", setQuery, 30);
-    }
-  };
 
   return (
     <>
@@ -56,24 +62,26 @@ export function Search() {
       <label htmlFor="search" className="sr-only">Search the forest of knowledge</label>
 
       <input 
+	ref={inputRef}
 	type="text"
 	value={query}
+	readOnly={recording}
         onChange={(e) => setQuery(e.target.value)}
+	placeholder="Search the forest of knowledge..."
 	id="search"
 	name="search"
 	required
 	minLength={4}
 	maxLength={1000}
-	placeholder="Search the forest of knowledge..."
 	className="min-w-0 flex-1 bg-transparent px-4 py-3 text-base outline-none placeholder:text-neutral-400"
       />
 
       <button
 	id="mic-btn"
 	type="button"
-	aria-pressed={listening}
+	aria-pressed={recording}
 	aria-label="Voice search"
-	onClick={handleMicClick}
+	onClick={toggleRecord}
 	className="group relative flex size-11 shrink-0 items-center justify-center rounded-full text-neutral-600 transition hover:bg-black/5 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-300 aria-pressed:bg-red-500 aria-pressed:text-white sm:size-12"
       >
 
@@ -96,6 +104,7 @@ export function Search() {
   	</svg>
       </button>
     </form>
+    <MessageDialog message={displayError} onHide={() => setDisplayError(null)} />
     </>
   );
 }
