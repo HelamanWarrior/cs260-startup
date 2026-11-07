@@ -9,6 +9,7 @@ const uuid = require('uuid');
 
 const transcriber = require('./transcriber');
 const { handleConnection } = require('./transcribeSocket');
+const { generateTitleAndTags } = require('./titler');
 
 const app = express();
 
@@ -84,21 +85,47 @@ apiRouter.get('/health', async (_req, res) => {
   res.json({ ok: true, modelLoaded: transcriber.isLoaded() });
 });
 
+const UNDO_GRACE_MS = 8000;
+
+function enrichNote(note) {
+  generateTitleAndTags(note.text)
+    .then((meta) => Object.assign(note, meta, { status: 'ready' }))
+    .catch((err) => {
+      console.error('Note enrichment failed:', err.message);
+      note.status = 'failed';
+    });
+}
+
 // Create a note
 apiRouter.post('/notes', verifyAuth, (req, res) => {
   const text = String(req.body?.text ?? '').trim();
   if (!text) return req.status(400).send({ msg: 'Empty note' });
 
-  const note = { id: uuid.v4(), owner: req.user.email, text, createdAt: Date.now() };
+  const note = {
+    id: uuid.v4(),
+    owner: req.user.email,
+    text,
+    createdAt: Date.now(),
+    title: null,
+    summary: '',
+    tags: [],
+    keywords: [],
+    status: 'pending',
+  };
   notes.push(note);
   res.status(201).send({ id: note.id, createdAt: note.createdAt });
+
+  // After the undo window, label the note in the background if it still exists
+  setTimeout(() => {
+    if (notes.includes(note)) enrichNote(note);
+  }, UNDO_GRACE_MS);
 });
 
 // List my notes, newest first
 apiRouter.get('/notes', verifyAuth, (req, res) => {
   const mine = notes
     .filter((n) => n.owner === req.user.email)
-    .map(({ id, text, createdAt }) => ({ id, text, createdAt }))
+    .map(({ owner, ...rest }) => rest)
     .reverse();
   res.send(mine);
 });

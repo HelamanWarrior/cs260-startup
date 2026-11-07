@@ -82,7 +82,7 @@ async function generateTitleAndTags(text) {
       const response = await withTimeout(
 	client.models.generateContent({
 	  model: process.env.GEMINI_MODEL,
-	  contents: text.slice(0, 4000), // cap the input so cost and latency stay bounded
+	  contents: text.slice(0, 8000), // cap the input so cost and latency stay bounded
 	  config: { systemInstruction: INSTRUCTIONS, responseMimeType: 'application/json' },
 	}),
 	15_000
