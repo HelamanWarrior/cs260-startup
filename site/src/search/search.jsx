@@ -37,7 +37,9 @@ export function Search() {
     e.preventDefault(); // stop the page reload
     const q = query.trim();
     setSubmitted(query.trim());
-    console.log("Submitted:", q); // replace with search functionality later
+    useEffect(() => {
+      if (!query) setSubmitted('');
+    }, [query]);
   };
 
   function handleToggle() {
@@ -48,7 +50,10 @@ export function Search() {
   return (
     <>
     <main className="mx-auto max-w-3xl space-y-10 px-4 py-8 sm:px-6 sm:py-12">
-      <NotesList />
+      {submitted && (
+        <p className="text-sm text-neutral-500">Results for “{submitted}”</p>
+      )}
+      <NotesList query={submitted} />
 
       <section aria-live="polite">
 	<div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6">

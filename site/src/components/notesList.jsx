@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-export default function NotesList() {
+export default function NotesList({ query = '' }) {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -10,33 +10,49 @@ export default function NotesList() {
 
   useEffect(() => {
     let cancelled = false;
+    let timer;
+    const url = query
+      ? `/api/notes/search?q=${encodeURIComponent(query)}`
+      : '/api/notes';
 
-    fetch('/api/notes')
-      .then((res) => {
-	if (!res.ok) throw new Error(`HTTP ${res.status}`);
-	return res.json();
-      })
-      .then((data) => {
-	if (!cancelled) setNotes(data);
-      })
-      .catch((err) => {
+    async function load() {
+      try {
+	const res = await fetch(url);
+    	if (!res.ok) throw new Error(`HTTP ${res.status}`);
+	const data = await res.json();
+	if (cancelled) return;
+
+	const list = Array.isArray(data) ? data : [];
+	setNotes(list);
+	setError(false);
+
+	// Keep checking while any note is still waiting for its labels
+	if (list.some((n) => n.status === 'pending')) {
+	  timer = setTimeout(load, 3000);
+	}
+      } catch (err) {
 	console.error(err);
 	if (!cancelled) setError(true);
-      })
-      .finally(() => {
-	if (!cancelled) setLoading(false);	
-      });
+      } finally {
+	if (!cancelled) setLoading(false);
+      }
+    }
 
+    load();
+    
     return () => {
       cancelled = true;
+      clearTimeout(timer);
     };
-  }, []);
+  }, [query]);
 
   if (loading) return <p className="text-neutral-400">Loading…</p>;
   if (error) return <p className="text-red-600">Couldn't load your notes.</p>;
-  if (notes.length === 0) {
-    return <p className="text-neutral-400">No notes yet. Record a drop to make one.</p>;
-  }
+  {!loading && !error && notes.length === 0 && (
+    <p className="text-neutral-400">
+      {query ? `No notes match “${query}”.` : 'No notes yet. Record a drop to make one.'}
+    </p>
+  )}
 
   return (
     <section>

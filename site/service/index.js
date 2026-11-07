@@ -10,6 +10,7 @@ const uuid = require('uuid');
 const transcriber = require('./transcriber');
 const { handleConnection } = require('./transcribeSocket');
 const { generateTitleAndTags } = require('./titler');
+const { searchNotes } = require('./search');
 
 const app = express();
 
@@ -136,6 +137,15 @@ apiRouter.delete('/notes/:id', verifyAuth, (req, res) => {
   if (i === -1) return res.status(404).send({ msg: 'Not found' });
   notes.splice(i, 1);
   res.status(204).end();
+});
+
+// Search notes
+apiRouter.get('/notes/search', verifyAuth, (req, res) => {
+  const q = String(req.query.q ?? '').trim().slice(0, 200);
+  if (!q) return res.status(400).send({ msg: 'Missing query' });
+
+  const mine = notes.filter((n) => n.owner === req.user.email);
+  res.send(searchNotes(mine, q));
 });
 
 // Return the application's default page if the path is unknown
