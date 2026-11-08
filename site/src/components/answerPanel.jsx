@@ -24,7 +24,7 @@ export default function AnswerPanel({ query, onSources }) {
       .then((data) => {
 	if (data.found) {
 	  setState({ status: 'ready', ...data });
-	  onSources?.(data.sources);
+	  onSources?.(query, data.sources);
 	} else {
 	  setState({ status: 'none' });
 	}

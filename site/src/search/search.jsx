@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 
 import NotesList from '../components/notesList';
 import AnswerPanel from '../components/answerPanel';
@@ -17,7 +17,10 @@ export function Search() {
   const [submitted, setSubmitted] = useState('');
   const [displayError, setDisplayError] = useState(null);
   const inputRef = useRef(null);
-  const [citedIds, setCitedIds] = useState([]);
+
+  const [cited, setCited] = useState({ query: '', ids: [] });
+  const handleSources = useCallback((q, ids) => setCited({ query: q, ids }), []);
+  const citedIds = cited.query === submitted ? cited.ids : [];
   
   const { recording, committed, tentative, toggleRecord } = useTranscription({
     onError: (code) => setDisplayError(STATUS_MESSAGES[code] ?? code),
@@ -59,15 +62,8 @@ export function Search() {
       {submitted && (
 	<p className="text-sm text-neutral-500">Results for “{submitted}”</p>
       )}
-      <AnswerPanel query={submitted} onSources={setCitedIds} />
+      <AnswerPanel query={submitted} onSources={handleSources} />
       <NotesList query={submitted} citedIds={citedIds} />
-
-      <section aria-live="polite">
-	<div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6">
-	  <p className="leading-relaxed text-neutral-600">
-	  </p>
-	</div>
-      </section>
     </main>
 
     <form onSubmit={handleSubmit} role="search" className="fixed inset-x-4 bottom-20 z-40 mx-auto flex max-w-2xl items-center gap-2 rounded-full bg-white/80 p-2 shadow-lg ring-1 ring-black/10 backdrop-blur-md focus-within:ring-2 focus-within:ring-sky-500">
