@@ -58,7 +58,7 @@ export function Search() {
 
   return (
     <>
-    <main className="mx-auto max-w-3xl space-y-10 px-4 py-8 sm:px-6 sm:py-12">
+    <main className="mx-auto max-w-3xl space-y-10 px-4 py-8 sm:px-6 sm:py-12 pb-44">
       {submitted && (
 	<p className="text-sm text-neutral-500">Results for “{submitted}”</p>
       )}

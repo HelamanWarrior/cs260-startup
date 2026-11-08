@@ -129,14 +129,14 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] I completed the prerequisites for this deliverable (Simon deployed, GitHub link, Git commits)
-- [ ] **Node.js/Express HTTP service** - I did not complete this part of the deliverable.
-- [ ] **Static middleware for frontend** - I did not complete this part of the deliverable.
-- [ ] **Calls to third party endpoints** - I did not complete this part of the deliverable.
-- [ ] **Backend service endpoints** - I did not complete this part of the deliverable.
-- [ ] **Frontend calls service endpoints** - I did not complete this part of the deliverable.
-- [ ] **Supports registration, login, logout, and restricted endpoint** - I did not complete this part of the deliverable.
-- [ ] **Uses BCrypt to hash passwords** - I did not complete this part of the deliverable.
+- [x] I completed the prerequisites for this deliverable (Simon deployed, GitHub link, Git commits)
+- [x] **Node.js/Express HTTP service** - Nodejs does the heavy lifting for the application. Full transcription model runs on the backend.
+- [x] **Static middleware for frontend** - Yep express serves the public folder.
+- [x] **Calls to third party endpoints** - Google is very generous with their free gemini API, added a rate-limiter to help improve the safety.
+- [x] **Backend service endpoints** - Tons of API endpoints, creating note, deleting a note, searching, etc.
+- [x] **Frontend calls service endpoints** - Wouldn't function at all without it, no point in the backend.
+- [x] **Supports registration, login, logout, and restricted endpoint** - Everything is restricted by having a login token, websockets, API calls, everything. Login and logout work properly, looking forward to once we get a database running for proper persistence.
+- [x] **Uses BCrypt to hash passwords** - BCrypt is being used properly and follows the Simon config.
 
 ## 🚀 DB deliverable
 
