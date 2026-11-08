@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 
 import NotesList from '../components/notesList';
+import AnswerPanel from '../components/answerPanel';
 import { useTranscription } from '../components/useTranscription';
 import { MessageDialog } from '../components/messageDialog';
 
@@ -33,9 +34,13 @@ export function Search() {
     if (recording && el) el.scrollLeft = el.scrollWidth;
   }, [query, recording]);
 
+  // Reset query when the box is emptied
+  useEffect(() => {
+    if (!query) setSubmitted('');
+  }, [query]);
+
   const handleSubmit = (e) => {
     e.preventDefault(); // stop the page reload
-    const q = query.trim();
     setSubmitted(query.trim());
     useEffect(() => {
       if (!query) setSubmitted('');
@@ -51,8 +56,9 @@ export function Search() {
     <>
     <main className="mx-auto max-w-3xl space-y-10 px-4 py-8 sm:px-6 sm:py-12">
       {submitted && (
-        <p className="text-sm text-neutral-500">Results for “{submitted}”</p>
+	<p className="text-sm text-neutral-500">Results for “{submitted}”</p>
       )}
+      <AnswerPanel query={submitted} />
       <NotesList query={submitted} />
 
       <section aria-live="polite">
@@ -75,8 +81,6 @@ export function Search() {
 	placeholder="Search the forest of knowledge..."
 	id="search"
 	name="search"
-	required
-	minLength={4}
 	maxLength={1000}
 	className="min-w-0 flex-1 bg-transparent px-4 py-3 text-base outline-none placeholder:text-neutral-400"
       />

@@ -11,6 +11,7 @@ const transcriber = require('./transcriber');
 const { handleConnection } = require('./transcribeSocket');
 const { generateTitleAndTags } = require('./titler');
 const { searchNotes } = require('./search');
+const { answerQuestion } = require('./answer');
 
 const app = express();
 
@@ -146,6 +147,20 @@ apiRouter.get('/notes/search', verifyAuth, (req, res) => {
 
   const mine = notes.filter((n) => n.owner === req.user.email);
   res.send(searchNotes(mine, q));
+});
+
+// AI answer
+apiRouter.post('/notes/answer', verifyAuth, async (req, res) => {
+  const query = String(req.body?.query ?? '').trim().slice(0, 300);
+  if (!query) return res.status(400).send({ msg: 'Missing query' });
+
+  try {
+    const mine = notes.filter((n) => n.owner === req.user.email);
+    res.send(await answerQuestion(mine, query));
+  } catch (err) {
+    console.error('Answer failed:', err.message);
+    res.status(502).send({ msg: 'Could not write an answer' });
+  }
 });
 
 // Return the application's default page if the path is unknown

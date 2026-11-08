@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import NoteCard from './noteCard';
 
 export default function NotesList({ query = '' }) {
   const [notes, setNotes] = useState([]);
@@ -71,33 +72,7 @@ export default function NotesList({ query = '' }) {
     
         <div className="mt-4 space-y-4">
 	  {notes.map((note) => (
-	    <article 
-	      key={note.id}
-	      className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 transition hover:shadow-md sm:p-6"
-	    >
-              <h3 className="font-semibold">{note.title}</h3>
-	      <time
-		dateTime={new Date(note.createdAt).toISOString()}
-		className="shrink-0 text-xs text-neutral-400"
-	      >
-		{formatDate(note.createdAt)}
-	      </time>
-	      {note.tags?.length > 0 && (
-		<ul className="mt-2 flex flex-wrap gap-2" aria-label="Tags">
-		  {note.tags.map((tag) => (
-		    <li
-		      key={tag}
-		      className="rounded-full bg-sky-50 px-2.5 py-0.5 text-xs font-medium text-sky-700"
-		    >
-		      {tag}
-		    </li>
-		  ))}
-              	</ul>
-	      )}
-              <p className="mt-3 text-sm leading-relaxed text-neutral-600 sm:text-base">
-		{note.text}
-              </p>
-            </article>
+	    <NoteCard key={note.id} note={note} />
 	  ))}
         </div>
       </details>

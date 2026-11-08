@@ -18,14 +18,20 @@ function termScore(tokens, term) {
   let exact = 0;
   let prefix = 0;
   let contained = 0;
+  let infix = 0;
+
   for (const tok of tokens) {
     if (tok === term) exact++;
     else if (term.length >= 3 && tok.startsWith(term)) prefix++;
     else if (tok.length >= 4 && !STOPWORDS.has(tok) && term.startsWith(tok)) contained++;
+    else if (term.length >= 3 && tok.includes(term)) infix++;
   }
-  if (!exact && !prefix && !contained) return 0;
-  const quality = exact ? 1 : prefix ? 0.6 : 0.4; // exact words beat prefix matches
-  return quality * (1 + Math.log(exact + prefix + contained)); // repeats help, with diminishing returns
+
+  const hits = exact + prefix + contained + infix;
+  if (!hits) return 0;
+
+  const quality = exact ? 1 : prefix ? 0.6 : contained ? 0.4 : 0.3; // exact words beat prefix matches
+  return quality * (1 + Math.log(hits)); // repeats help, with diminishing returns
 }
 
 function searchNotes(notes, query, limit = 10) {

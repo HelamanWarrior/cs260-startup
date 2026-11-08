@@ -1,11 +1,4 @@
-let ai;
-async function getClient() {
-  if (!ai) {
-    const { GoogleGenAI } = await import('@google/genai');
-    ai = new GoogleGenAI({});
-  }
-  return ai;
-}
+const { generateJsonText } = require('./gemini');
 
 const INSTRUCTIONS = `You analyze transcripts of voice notes and extract metadata that helps link related notes together.
 Reply with JSON only, in exactly this shape:
@@ -75,28 +68,13 @@ function clean(raw) {
 }
 
 async function generateTitleAndTags(text) {
-  const client = await getClient();
-
-  for (let attempt = 1; ; attempt++) {
-    try { 
-      const response = await withTimeout(
-	client.models.generateContent({
-	  model: process.env.GEMINI_MODEL,
-	  contents: text.slice(0, 8000), // cap the input so cost and latency stay bounded
-	  config: { systemInstruction: INSTRUCTIONS, responseMimeType: 'application/json' },
-	}),
-	15_000
-      );
-      const result = clean(response.text);
-      if (!result) throw new Error('Unusable response from model');
-      return result;
-    } catch (err) {
-      const retryable =
-	err.status === 429 || err.status === 503 || err.message === 'Gemini timed out';
-      if (!retryable || attempt >= 3) throw err;
-      await new Promise((r) => setTimeout(r, 1000 * 2 ** (attempt - 1)));
-    }
-  }
+  const raw = await generateJsonText({
+    instructions: INSTRUCTIONS,
+    contents: text.slice(0, 20000),
+  });
+  const result = clean(raw);
+  if (!result) throw new Error('Unusable response from model');
+  return result;
 }
 
 module.exports = { generateTitleAndTags };
