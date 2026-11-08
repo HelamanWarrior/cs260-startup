@@ -7,7 +7,7 @@ export function shouldAsk(query) {
   return q.endsWith('?') || q.split(/\s+/).filter(Boolean).length >= 4;
 }
 
-export default function AnswerPanel({ query }) {
+export default function AnswerPanel({ query, onSources }) {
   const [state, setState] = useState({ status: 'idle' });
   const [attempt, setAttempt] = useState(0);
 
@@ -22,16 +22,25 @@ export default function AnswerPanel({ query }) {
 
     fetchAnswer(query, controller.signal)
       .then((data) => {
-	setState(data.found ? { status: 'ready', ...data } : { status: 'none' });
+	if (data.found) {
+	  setState({ status: 'ready', ...data });
+	  onSources?.(data.sources);
+	} else {
+	  setState({ status: 'none' });
+	}
       })
       .catch((err) => {
 	if (err.name === 'AbortError') return; // a newer search replaced this one
-	console.error(err);
-	setState({ status: 'error' });
+	if (err.code === 'rate-limited') {
+	  setState({ status: 'limited', retryAfter: err.retryAfter });
+	} else {
+	  console.error(err);
+	  setState({ status: 'error' });
+	}
       });
 
     return () => controller.abort();
-  }, [query, attempt]);
+  }, [query, attempt, onSources]);
 
   const { status } = state;
 
@@ -78,6 +87,16 @@ export default function AnswerPanel({ query }) {
 		Try again
 	      </button>
 	    </div>
+	  )}
+
+	  {status === 'limited' && (
+	    <p className="mt-2 text-neutral-600">
+	      You&apos;ve asked a lot of questions in a short time. Try again in{' '}
+	      {state.retryAfter > 90
+		? `${Math.ceil(state.retryAfter / 60)} minutes`
+		: `${state.retryAfter ?? 'a few'} seconds`}
+	      . Your search results are below.
+	    </p>
 	  )}
 	</section>
       )}

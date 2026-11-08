@@ -12,6 +12,7 @@ const { handleConnection } = require('./transcribeSocket');
 const { generateTitleAndTags } = require('./titler');
 const { searchNotes } = require('./search');
 const { answerQuestion } = require('./answer');
+const { rateLimit } = require('./rateLimit');
 
 const app = express();
 
@@ -99,7 +100,8 @@ function enrichNote(note) {
 }
 
 // Create a note
-apiRouter.post('/notes', verifyAuth, (req, res) => {
+const saveLimit = rateLimit([{ windowMs: 60 * 60_000, max: 30 }]);
+apiRouter.post('/notes', verifyAuth, saveLimit, (req, res) => {
   const text = String(req.body?.text ?? '').trim();
   if (!text) return req.status(400).send({ msg: 'Empty note' });
 
@@ -150,7 +152,12 @@ apiRouter.get('/notes/search', verifyAuth, (req, res) => {
 });
 
 // AI answer
-apiRouter.post('/notes/answer', verifyAuth, async (req, res) => {
+const answerLimit = rateLimit([
+  { windowMs: 60_000, max: 8 },			// 8 answers per minute
+  { windowMs: 24 * 60 * 60_000, max: 150 },	// 150 per day
+]);
+
+apiRouter.post('/notes/answer', verifyAuth, answerLimit, async (req, res) => {
   const query = String(req.body?.query ?? '').trim().slice(0, 300);
   if (!query) return res.status(400).send({ msg: 'Missing query' });
 

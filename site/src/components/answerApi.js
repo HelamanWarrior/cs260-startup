@@ -1,4 +1,4 @@
-const USE_MOCK = true;
+const USE_MOCK = false;
 
 export async function fetchAnswer(query, signal) {
   if (USE_MOCK) return mockAnswer(query, signal);
@@ -9,6 +9,13 @@ export async function fetchAnswer(query, signal) {
     body: JSON.stringify({ query }),
     signal,
   });
+  if (res.status === 429) {
+    const { retryAfter } = await res.json().catch(() => ({}));
+    const err = new Error('rate limited');
+    err.code = 'rate-limited';
+    err.retryAfter = retryAfter;
+    throw err;
+  }
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
 }

@@ -5,12 +5,21 @@ const formatDate = (ms) =>
 
 const truncate = (s, n) => (s.length > n ? `${s.slice(0, n).trimEnd()}…` : s);
 
-export default function NoteCard({ note }) {
+export default function NoteCard({ note, cited = false }) {
   const [open, setOpen] = useState(false);
   const transcriptId = useId();
 
   return (
-    <article className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 transition hover:shadow-md sm:p-6">
+    <article
+      className={`rounded-2xl bg-white p-5 shadow-sm transition hover:shadow-md sm:p-6 ${
+	cited ? 'ring-2 ring-sky-400' : 'ring-1 ring-black/5'
+      }`}
+    >
+      {cited && (
+	<p className="mb-2 text-xs font-semibold uppercase tracking-wide text-sky-700">
+	  Used in the answer
+	</p>
+      )}
       <div className="flex items-baseline justify-between gap-3">
 	<h3 className="font-semibold">
 	  {note.title ?? (note.status === 'pending' ? 'Naming this drop…' : 'Untitled drop')}

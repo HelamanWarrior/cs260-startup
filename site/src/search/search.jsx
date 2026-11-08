@@ -17,6 +17,7 @@ export function Search() {
   const [submitted, setSubmitted] = useState('');
   const [displayError, setDisplayError] = useState(null);
   const inputRef = useRef(null);
+  const [citedIds, setCitedIds] = useState([]);
   
   const { recording, committed, tentative, toggleRecord } = useTranscription({
     onError: (code) => setDisplayError(STATUS_MESSAGES[code] ?? code),
@@ -58,8 +59,8 @@ export function Search() {
       {submitted && (
 	<p className="text-sm text-neutral-500">Results for “{submitted}”</p>
       )}
-      <AnswerPanel query={submitted} />
-      <NotesList query={submitted} />
+      <AnswerPanel query={submitted} onSources={setCitedIds} />
+      <NotesList query={submitted} citedIds={citedIds} />
 
       <section aria-live="polite">
 	<div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6">

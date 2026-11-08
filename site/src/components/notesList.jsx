@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import NoteCard from './noteCard';
 
-export default function NotesList({ query = '' }) {
+export default function NotesList({ query = '', citedIds = [] }) {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -72,7 +72,7 @@ export default function NotesList({ query = '' }) {
     
         <div className="mt-4 space-y-4">
 	  {notes.map((note) => (
-	    <NoteCard key={note.id} note={note} />
+	    <NoteCard key={note.id} note={note} cited={citedIds.includes(note.id)} />
 	  ))}
         </div>
       </details>
