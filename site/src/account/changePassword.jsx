@@ -63,7 +63,7 @@ export function ChangePassword({ onBack }) {
 	body: JSON.stringify({ currentPassword: current, newPassword: next }),
       });
 
-      if (res.ok) {
+      if (!res.ok) {
 	const body = await res.json().catch(() => ({}));
 	throw new Error(body.msg || 'Couldn’t change your password. Please try again.');
       }
