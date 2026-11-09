@@ -47,12 +47,33 @@ const verifyAuth = async (req, res, next) => {
 var apiRouter = express.Router();
 app.use('/api', apiRouter);
 
+// Basic credential checks. Keep the same rules on the client, but never trust it.
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MAX_EMAIL = 254;
+const MIN_PASSWORD = 8;
+const MAX_PASSWORD = 200; // bcrypt only uses the first 72 bytes; cap input to bound work
+
+// Returns a cleaned { email, password } or null if the credentials are invalid.
+function validCredentials(body) {
+  const email = typeof body?.email === 'string' ? body.email.trim().toLowerCase() : '';
+  const password = typeof body?.password === 'string' ? body.password : '';
+
+  if (!email || email.length > MAX_EMAIL || !EMAIL_RE.test(email)) return null;
+  if (password.length < MIN_PASSWORD || password.length > MAX_PASSWORD) return null;
+
+  return { email, password };
+}
+
 // CreateAuth a new user
 apiRouter.post('/auth/create', async (req, res) => {
-  if (await findUser('email', req.body.email)) {
+  const creds = validCredentials(req.body);
+  if (!creds) {
+    return res.status(400).send({ msg: 'Invalid email or password (min 8 characters)' });
+  }
+  if (await findUser('email', creds.email)) {
     res.status(409).send({ msg: 'Existing user' });
   } else {
-    const user = await createUser(req.body.email, req.body.password);
+    const user = await createUser(creds.email, creds.password);
 
     setAuthCookie(res, user.token);
     res.send({ email: user.email });
@@ -61,9 +82,13 @@ apiRouter.post('/auth/create', async (req, res) => {
 
 // GetAuth login an existing user
 apiRouter.post('/auth/login', async (req, res) => {
-  const user = await findUser('email', req.body.email);
+  const creds = validCredentials(req.body);
+  if (!creds) {
+    return res.status(401).send({ msg: 'Unauthorized' });
+  }
+  const user = await findUser('email', creds.email);
   if (user) {
-    if (await bcrypt.compare(req.body.password, user.password)) {
+    if (await bcrypt.compare(creds.password, user.password)) {
       user.token = uuid.v4();
       setAuthCookie(res, user.token);
       res.send({ email: user.email });
