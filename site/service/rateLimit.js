@@ -1,9 +1,11 @@
-// Per-user limits, kept in memory. Each rule is { windowsMs, max }.
-function rateLimit(rules) {
+// In-memory sliding-window limiter. Each rule is { windowMs, max }.
+// `keyFn` picks what to count by (default: the authenticated user's email).
+// For unauthenticated routes, pass a keyFn like `(req) => req.ip`.
+function rateLimit(rules, keyFn = (req) => req.user.email) {
   const longest = Math.max(...rules.map((r) => r.windowMs));
-  const hits = new Map(); // user -> timestamps of their recent allowed requests
+  const hits = new Map(); // key -> timestamps of their recent counted requests
 
-  // Occasionally drop users who have been quiet, so the map can't grow forever
+  // Occasionally drop keys that have been quiet, so the map can't grow forever
   setInterval(() => {
     const now = Date.now();
     for (const [key, times] of hits) {
@@ -12,7 +14,7 @@ function rateLimit(rules) {
   }, 10 * 60_000).unref();
 
   return (req, res, next) => {
-    const key = req.user.email;
+    const key = keyFn(req);
     const now = Date.now();
     const times = (hits.get(key) ?? []).filter((t) => now - t < longest);
 

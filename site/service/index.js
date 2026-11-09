@@ -16,6 +16,11 @@ const { rateLimit } = require('./rateLimit');
 
 const app = express();
 
+// In production the service sits behind a single reverse proxy (nginx).
+// Trust exactly one hop so `req.ip` is the real client, not the proxy, while
+// still ignoring any X-Forwarded-For values the client tries to inject.
+app.set('trust proxy', 1);
+
 const authCookieName = 'token';
 const users = [];
 const notes = [];
@@ -64,8 +69,18 @@ function validCredentials(body) {
   return { email, password };
 }
 
+// Throttle unauthenticated auth attempts per client IP to slow brute force and
+// account spam. Two windows: a short burst limit and a sustained hourly cap.
+const authLimit = rateLimit(
+  [
+    { windowMs: 60_000, max: 10 },        // 10 attempts per minute
+    { windowMs: 60 * 60_000, max: 50 },   // 50 attempts per hour
+  ],
+  (req) => req.ip,
+);
+
 // CreateAuth a new user
-apiRouter.post('/auth/create', async (req, res) => {
+apiRouter.post('/auth/create', authLimit, async (req, res) => {
   const creds = validCredentials(req.body);
   if (!creds) {
     return res.status(400).send({ msg: 'Invalid email or password (min 8 characters)' });
@@ -81,7 +96,7 @@ apiRouter.post('/auth/create', async (req, res) => {
 });
 
 // GetAuth login an existing user
-apiRouter.post('/auth/login', async (req, res) => {
+apiRouter.post('/auth/login', authLimit, async (req, res) => {
   const creds = validCredentials(req.body);
   if (!creds) {
     return res.status(401).send({ msg: 'Unauthorized' });
