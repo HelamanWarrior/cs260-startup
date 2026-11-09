@@ -57,7 +57,7 @@ export default function NotesList({ query = '', citedIds = [] }) {
 
   return (
     <section>
-      <details className="group">
+      <details open className="group">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-2xl bg-white px-5 py-4 shadow-sm ring-1 ring-black/5 transition hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 [&::-webkit-details-marker]:hidden">
           <h2 className="text-xl font-semibold sm:text-2xl">
             View previous drops
