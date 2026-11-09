@@ -103,7 +103,7 @@ function enrichNote(note) {
 const saveLimit = rateLimit([{ windowMs: 60 * 60_000, max: 30 }]);
 apiRouter.post('/notes', verifyAuth, saveLimit, (req, res) => {
   const text = String(req.body?.text ?? '').trim();
-  if (!text) return req.status(400).send({ msg: 'Empty note' });
+  if (!text) return res.status(400).send({ msg: 'Empty note' });
 
   const note = {
     id: uuid.v4(),
