@@ -46,15 +46,7 @@ export function Search() {
   const handleSubmit = (e) => {
     e.preventDefault(); // stop the page reload
     setSubmitted(query.trim());
-    useEffect(() => {
-      if (!query) setSubmitted('');
-    }, [query]);
   };
-
-  function handleToggle() {
-    if (!recording) dismiss();
-    toggleRecord();
-  }
 
   return (
     <>
