@@ -83,6 +83,28 @@ apiRouter.delete('/auth/logout', async (req, res) => {
   res.status(204).end();
 });
 
+// ChangeAuth update the current user's password
+apiRouter.put('/auth/password', verifyAuth, async (req, res) => {
+  const currentPassword = String(req.body?.currentPassword ?? '');
+  const newPassword = String(req.body?.newPassword ?? '');
+
+  if (!(await bcrypt.compare(currentPassword, req.user.password))) {
+    return res.status(401).send({ msg: 'Current password is incorrect' });
+  }
+  if (newPassword.length < 8) {
+    return res.status(400).send({ msg: 'New password must be at least 8 characters' });
+  }
+  if (newPassword === currentPassword) {
+    return res.status(400).send({ msg: 'New password must differ from the current one' });
+  }
+
+  req.user.password = await bcrypt.hash(newPassword, 10);
+  // Rotate the session token so the new credentials take effect immediately
+  req.user.token = uuid.v4();
+  setAuthCookie(res, req.user.token);
+  res.status(204).end();
+});
+
 // Get TranscribeCPP backend health
 apiRouter.get('/health', async (_req, res) => {
   res.json({ ok: true, modelLoaded: transcriber.isLoaded() });
