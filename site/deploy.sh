@@ -1,6 +1,13 @@
 #!/bin/sh
+set -eu
 
 service="startup"
+host="parker@freenas.home.lan"
+dest="Docker/cs260/services/${service}"   # relative to your home directory on the server
+compose_dir="Docker/cs260"
+
+# Clean up local build files however the script ends, even on failure
+trap 'rm -rf build dist' EXIT
 
 # Step 1
 printf "\n----> Build the distribution package\n"
@@ -9,29 +16,33 @@ mkdir build
 npm install # make sure vite is installed so that we can bundle
 npm run build # build the React front end
 cp -rf dist build/public # move the React front end to the target distribution
-cp service/*.js build # move the back end service to the target distribution
-cp service/*.json build
+for f in service/*.js; do
+  case "$f" in
+    *-test.js) ;;          # leave test scripts behind
+    *) cp "$f" build/ ;;
+  esac
+done
+cp service/*.json build/
 
 # Step 2
-printf "\n----> Clearing out previous distribution on the target\n"
-ssh -i "$key" parker@freenas.home.lan << ENDSSH
-rm -rf ~/Docker/cs260/services/${service}
-mkdir -p ~/Docker/cs260/services/${service}
-ENDSSH
+printf "\n----> Sending the distribution package to the target\n"
+ssh "$host" "mkdir -p ${dest}"
+rsync -az --delete \
+  --exclude 'node_modules' --exclude 'models' --exclude '.env' \
+  build/ "${host}:${dest}/"
 
 # Step 3
-printf "\n----> Copy the distribution package to the target\n"
-scp -r -i "$key" build/* parker@freenas.home.lan:~/Docker/cs260/services/$service
+printf "\n----> Copy the transcription model\n"
+ssh "$host" "mkdir -p ${dest}/models"
+rsync -ah --partial --progress \
+  service/models/nemotron-speech-streaming-en-0.6b-Q8_0.gguf \
+  parker@freenas.home.lan:${dest}/models/
+
+# Step 3
+printf "\n----> Deploy the service on the target\n"
+ssh "$host" "cd ${compose_dir} && docker compose up -d --force-recreate ${service}-service"
 
 # Step 4
-printf "\n----> Deploy the service on the target\n"
-ssh -i "$key" parker@freenas.home.lan << ENDSSH
-cd ~/Docker/cs260
-docker compose restart
-ENDSSH
-
-# Step 5
-printf "\n----> Removing local copy of the distribution package\n"
-rm -rf build
-rm -rf dist
-
+printf "\n----> Recent logs\n"
+sleep 5
+ssh "$host" "cd ${compose_dir} && docker compose logs --tail=20 ${service}-service"
