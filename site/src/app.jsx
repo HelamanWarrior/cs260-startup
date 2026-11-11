@@ -1,8 +1,8 @@
 import React from 'react';
 import './style.css';
 
-import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
-import { Login, AuthState } from './features/auth';
+import { BrowserRouter, Navigate, NavLink, Route, Routes } from 'react-router-dom';
+import { Login, AuthState, verifySession } from './features/auth';
 import { Home } from './pages/home/home';
 import { Search } from './pages/search/search';
 import { About } from './pages/about/about';
@@ -74,10 +74,47 @@ const links = [
   },
 ];
 
+// Gate protected screens. While the session is still being verified we render
+// nothing (brief), and anyone without a valid session is sent to the login page
+// instead of being allowed to wander through a non-functional app.
+function RequireAuth({ authState, children }) {
+  if (authState === AuthState.Unknown) return null;
+  if (authState !== AuthState.Authenticated) return <Navigate to="/login" replace />;
+  return children;
+}
+
 export default function App() {
   const [userName, setUserName] = React.useState(localStorage.getItem('userName') || '');
-  const currentAuthState = userName ? AuthState.Authenticated : AuthState.Unauthenticated;
-  const [authState, setAuthState] = React.useState(currentAuthState);
+  // Start in "Unknown" and let the server tell us the truth. Don't trust
+  // localStorage alone: the httpOnly token cookie is the real session.
+  const [authState, setAuthState] = React.useState(AuthState.Unknown);
+
+  React.useEffect(() => {
+    let active = true;
+    verifySession().then((result) => {
+      if (!active) return;
+      if (result.status === 'authenticated') {
+        localStorage.setItem('userName', result.email);
+        setUserName(result.email);
+        setAuthState(AuthState.Authenticated);
+      } else if (result.status === 'unauthenticated') {
+        localStorage.removeItem('userName');
+        setUserName('');
+        setAuthState(AuthState.Unauthenticated);
+      } else {
+        // Couldn't verify (offline/server error): fall back to stored state
+        // rather than kicking the user out of an otherwise working session.
+        setAuthState(
+          localStorage.getItem('userName')
+            ? AuthState.Authenticated
+            : AuthState.Unauthenticated,
+        );
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const visibleLinks = links.filter((link) => !link.authOnly || authState === AuthState.Authenticated);
 
@@ -96,9 +133,9 @@ export default function App() {
 	    />
 	    } exact
 	  />
-	  <Route path='/home' element={<Home />} />
-	  <Route path='/search' element={<Search />} />
-	  <Route path='/about' element={<About />} />
+	  <Route path='/home' element={<RequireAuth authState={authState}><Home /></RequireAuth>} />
+	  <Route path='/search' element={<RequireAuth authState={authState}><Search /></RequireAuth>} />
+	  <Route path='/about' element={<RequireAuth authState={authState}><About /></RequireAuth>} />
 	  <Route path='/login' element={
 	    <Login
 	      userName={userName}

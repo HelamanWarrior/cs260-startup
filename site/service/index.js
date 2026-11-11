@@ -113,6 +113,13 @@ apiRouter.post('/auth/login', authLimit, async (req, res) => {
   res.status(401).send({ msg: 'Unauthorized' });
 });
 
+// GetAuth confirm the caller still has a valid session cookie. The client uses
+// this as the source of truth because it cannot read the httpOnly token cookie
+// itself; localStorage may claim a user is logged in after the cookie is gone.
+apiRouter.get('/auth/me', verifyAuth, (req, res) => {
+  res.send({ email: req.user.email });
+});
+
 // DeleteAuth logout a user
 apiRouter.delete('/auth/logout', async (req, res) => {
   const user = await findUser('token', req.cookies[authCookieName]);
