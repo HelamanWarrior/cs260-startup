@@ -1,8 +1,13 @@
+const { readSecret } = require('./secrets');
+
 let ai;
 async function getClient() {
   if (!ai) {
     const { GoogleGenAI } = await import('@google/genai');
-    ai = new GoogleGenAI({});
+    // Pass the key explicitly from a file-mounted secret (GEMINI_API_KEY_FILE)
+    // or an env var fallback, instead of relying on the SDK reading process.env.
+    const apiKey = readSecret('GEMINI_API_KEY');
+    ai = new GoogleGenAI({ apiKey });
   }
   return ai;
 }
@@ -19,7 +24,7 @@ function withTimeout(promise, ms) {
 // Retries on overload, rate limits, and timeouts; anything else fails immediately.
 async function generateJsonText({ instructions, contents, timeoutMs = 30_000, tries = 3 }) {
   const model = process.env.GEMINI_MODEL;
-  if (!model) throw new Error('GEMINI_MODEL is not set. Add it to .env');
+  if (!model) throw new Error('GEMINI_MODEL is not set. Add it to the service environment.');
   const client = await getClient();
 
   for (let attempt = 1; ; attempt++) {
