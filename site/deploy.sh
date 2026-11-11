@@ -3,7 +3,7 @@ set -eu
 
 service="startup"
 host="parker@freenas.home.lan"
-dest="Docker/cs260/services/${service}"   # relative to your home directory on the server
+dest="Docker/cs260/services/${service}"
 compose_dir="Docker/cs260"
 
 # Clean up local build files however the script ends, even on failure
@@ -16,13 +16,15 @@ mkdir build
 npm install # make sure vite is installed so that we can bundle
 npm run build # build the React front end
 cp -rf dist build/public # move the React front end to the target distribution
-for f in service/*.js; do
-  case "$f" in
-    *-test.js) ;;          # leave test scripts behind
-    *) cp "$f" build/ ;;
-  esac
-done
-cp service/*.json build/
+
+# Copy the backend service, preserving its module folder structure
+# Secrets, local deps, the model, tests, and docs are left behind.
+rsync -a \
+  --exclude 'node_modules' --exclude 'models' \
+  --exclude '.env' --exclude '.env.example' \
+  --exclude 'tests' --exclude '*.test.js' \
+  --exclude 'README-secrets.md' \
+  service/ build/
 
 # Step 2
 printf "\n----> Sending the distribution package to the target\n"

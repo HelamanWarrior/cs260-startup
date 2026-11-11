@@ -1,4 +1,4 @@
-const { searchNotes } = require('./search');
+const { searchNotes } = require('../notes/search');
 
 const notes = [
   {

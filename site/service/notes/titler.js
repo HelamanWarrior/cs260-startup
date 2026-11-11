@@ -1,4 +1,4 @@
-const { generateJsonText } = require('./gemini');
+const { generateJsonText } = require('../llm/gemini');
 
 const INSTRUCTIONS = `You analyze transcripts of voice notes and extract metadata that helps link related notes together.
 Reply with JSON only, in exactly this shape:

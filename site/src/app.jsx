@@ -2,12 +2,11 @@ import React from 'react';
 import './style.css';
 
 import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
-import { Login } from './account/login';
-import { Home } from './home/home';
-import { Search } from './search/search';
-import { About } from './about/about';
-import { Account } from './account/account';
-import { AuthState } from './account/authState';
+import { Login, AuthState } from './features/auth';
+import { Home } from './pages/home/home';
+import { Search } from './pages/search/search';
+import { About } from './pages/about/about';
+import { Account } from './pages/account/account';
 
 function Icon({ children }) {
   return (

@@ -9,6 +9,7 @@ async function loadModel() {
   model = await TranscribeModel.load(
     path.join(
       __dirname,
+      '..',
       'models',
       'nemotron-speech-streaming-en-0.6b-Q8_0.gguf',
     ),

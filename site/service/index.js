@@ -7,12 +7,12 @@ const bcrypt = require('bcryptjs');
 const express = require('express');
 const uuid = require('uuid');
 
-const transcriber = require('./transcriber');
-const { handleConnection } = require('./transcribeSocket');
-const { generateTitleAndTags } = require('./titler');
-const { searchNotes } = require('./search');
-const { answerQuestion } = require('./answer');
-const { rateLimit } = require('./rateLimit');
+const transcriber = require('./transcription/transcriber');
+const { handleConnection } = require('./transcription/transcribeSocket');
+const { generateTitleAndTags } = require('./notes/titler');
+const { searchNotes } = require('./notes/search');
+const { answerQuestion } = require('./notes/answer');
+const { rateLimit } = require('./middleware/rateLimit');
 
 const app = express();
 

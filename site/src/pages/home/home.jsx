@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { useTranscription } from '../components/useTranscription';
-import { useCaptionWindow } from '../components/useCaptionWindow';
-import { useNoteSaver } from '../components/useNoteSaver';
-import { MessageDialog } from '../components/messageDialog';
-import { NoteToast } from '../components/noteToast';
+import { useTranscription, useCaptionWindow } from '../../features/transcription';
+import { useNoteSaver, NoteToast } from '../../features/notes';
+import { MessageDialog } from '../../components';
 
 const DROP_PATH = 'M50 4C58 24 92 52 92 82a42 42 0 0 1-84 0C8 52 42 24 50 4Z';
 

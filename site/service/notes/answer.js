@@ -1,5 +1,5 @@
 const { searchNotes } = require('./search');
-const { generateJsonText } = require('./gemini');
+const { generateJsonText } = require('../llm/gemini');
 
 const MAX_NOTES = 5;		// how many notes the model gets to read
 const MIN_SCORE = 1;		// weaker best-matches than this skip the model entirely

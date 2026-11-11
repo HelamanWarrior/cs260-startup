@@ -1,4 +1,4 @@
-const { readSecret } = require('./secrets');
+const { readSecret } = require('../config/secrets');
 
 let ai;
 async function getClient() {

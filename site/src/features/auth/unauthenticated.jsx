@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { MessageDialog } from '../components/messageDialog';
+import { MessageDialog } from '../../components';
 
 export function Unauthenticated(props) {
   const [userName, setUserName] = React.useState(props.userName);

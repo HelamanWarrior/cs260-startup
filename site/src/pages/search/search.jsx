@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState, useRef } from "react";
 
-import NotesList from '../components/notesList';
-import AnswerPanel from '../components/answerPanel';
-import { useTranscription } from '../components/useTranscription';
-import { MessageDialog } from '../components/messageDialog';
+import { NotesList } from '../../features/notes';
+import { AnswerPanel } from '../../features/answer';
+import { useTranscription } from '../../features/transcription';
+import { MessageDialog } from '../../components';
 
 const STATUS_MESSAGES = {
   busy: 'Server busy. Try again in a moment.',
