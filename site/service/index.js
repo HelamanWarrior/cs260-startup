@@ -7,6 +7,7 @@ const bcrypt = require('bcryptjs');
 const express = require('express');
 const uuid = require('uuid');
 
+const db = require('./database');
 const transcriber = require('./transcription/transcriber');
 const { handleConnection } = require('./transcription/transcribeSocket');
 const { generateTitleAndTags } = require('./notes/titler');
@@ -296,6 +297,9 @@ async function shutdown(server, wss) {
 }
 
 async function start() {
+  await db.connect();
+  console.log('Connected to MongoDB');
+
   const server = http.createServer(app);
   const wss = new WebSocketServer({ noServer: true, maxPayload: 64 * 1024 });
   await transcriber.loadModel();

@@ -40,6 +40,26 @@ const collections = {
   notes: () => getDb().collection('notes'),
 };
 
+function getUser(email) {
+  return collections.users().findOne({ email: email });
+}
+
+function getUserByToken(token) {
+  return collections.users().findOne({ token: token });
+}
+
+async function addUser(user) {
+  await collections.users().insertOne(user);
+}
+
+async function updateUser(user) {
+  await collections.users().updateOne({ email: user.email }, { $set: user });
+}
+
+async function addNote(note) {
+  return collections.notes().insertOne(note);
+}
+
 // Verify connectivity (used by the db:ping script and health checks).
 async function ping() {
   const database = await connect();
@@ -53,4 +73,15 @@ async function close() {
   db = undefined;
 }
 
-module.exports = { connect, getDb, collections, ping, close };
+module.exports = {
+  connect,
+  getDb,
+  collections,
+  getUser,
+  getUserByToken,
+  addUser,
+  updateUser,
+  addNote,
+  ping,
+  close,
+};
