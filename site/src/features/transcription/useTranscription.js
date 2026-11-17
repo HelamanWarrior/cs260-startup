@@ -1,11 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { startTranscription } from './transcribe';
+import { useWakeLock } from './useWakeLock';
 
 export function useTranscription({ onError, onComplete } = {}) {
   const stopRef = useRef(null);
   const startingRef = useRef(false);
   const [recording, setRecording] = useState(false);
   const [text, setText] = useState({ committed: '', tentative: '' });
+
+  // Hold a screen wake lock for as long as we're recording.
+  useWakeLock(recording);
 
   // If the component unmounts mid-recording, shut everything down
   useEffect(() => () => { stopRef.current?.(); }, []);
