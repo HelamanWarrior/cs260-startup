@@ -39,7 +39,7 @@ app.use(express.static('public'));
 
 // Middleware to verify that the user is authorized to call an endpoint
 const verifyAuth = async (req, res, next) => {
-  const user = await findUser('token', req.cookies[authCookieName]);
+  const user = await db.getUserByToken(req.cookies[authCookieName]);
   if (user) {
     req.user = user;
     next();
@@ -85,7 +85,7 @@ apiRouter.post('/auth/create', authLimit, async (req, res) => {
   if (!creds) {
     return res.status(400).send({ msg: 'Invalid email or password (min 8 characters)' });
   }
-  if (await findUser('email', creds.email)) {
+  if (await db.getUser(creds.email)) {
     res.status(409).send({ msg: 'Existing user' });
   } else {
     const user = await createUser(creds.email, creds.password);
@@ -101,7 +101,7 @@ apiRouter.post('/auth/login', authLimit, async (req, res) => {
   if (!creds) {
     return res.status(401).send({ msg: 'Unauthorized' });
   }
-  const user = await findUser('email', creds.email);
+  const user = await db.getUser(creds.email);
   if (user) {
     if (await bcrypt.compare(creds.password, user.password)) {
       user.token = uuid.v4();
@@ -122,7 +122,7 @@ apiRouter.get('/auth/me', verifyAuth, (req, res) => {
 
 // DeleteAuth logout a user
 apiRouter.delete('/auth/logout', async (req, res) => {
-  const user = await findUser('token', req.cookies[authCookieName]);
+  const user = await db.getUserByToken(req.cookies[authCookieName]);
   if (user) {
     delete user.token;
   }
@@ -262,16 +262,6 @@ async function createUser(email, password) {
   return user;
 }
 
-async function findUser(field, value) {
-  if (!value) return null;
-
-  if (field == 'email') {
-    return await db.getUser(value);
-  }
-  
-  return await db.getUserByToken(value);
-}
-
 // setAuthCookie in the HTTP response
 function setAuthCookie(res, authToken) {
   res.cookie(authCookieName, authToken, {
@@ -320,7 +310,7 @@ async function start() {
     let user;
     try {
       const cookies = parseCookie(req.headers.cookie || '');
-      user = await findUser('token', cookies[authCookieName]);
+      user = await db.getUserByToken(cookies[authCookieName]);
     } catch (err) {
       console.error(err);
     }

@@ -41,10 +41,12 @@ const collections = {
 };
 
 function getUser(email) {
+  if (!email) return null;
   return collections.users().findOne({ email: email });
 }
 
 function getUserByToken(token) {
+  if (!token) return null;
   return collections.users().findOne({ token: token });
 }
 
@@ -58,6 +60,10 @@ async function updateUser(user) {
 
 async function addNote(note) {
   return collections.notes().insertOne(note);
+}
+
+function getNotes(user) {
+
 }
 
 // Verify connectivity (used by the db:ping script and health checks).
