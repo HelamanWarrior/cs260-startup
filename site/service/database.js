@@ -62,8 +62,11 @@ async function addNote(note) {
   return collections.notes().insertOne(note);
 }
 
-function getNotes(user) {
-
+function getNotes(owner) {
+  return collections.notes()
+    .find({ owner: owner }, { projection: { _id: 0, owner: 0 } }) // remove owner and id from results
+    .sort({ createdAt: -1 })  // newest first
+    .toArray();
 }
 
 // Verify connectivity (used by the db:ping script and health checks).
@@ -88,6 +91,7 @@ module.exports = {
   addUser,
   updateUser,
   addNote,
+  getNotes,
   ping,
   close,
 };

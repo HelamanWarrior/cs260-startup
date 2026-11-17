@@ -195,11 +195,8 @@ apiRouter.post('/notes', verifyAuth, saveLimit, async (req, res) => {
 });
 
 // List my notes, newest first
-apiRouter.get('/notes', verifyAuth, (req, res) => {
-  const mine = notes
-    .filter((n) => n.owner === req.user.email)
-    .map(({ owner, ...rest }) => rest)
-    .reverse();
+apiRouter.get('/notes', verifyAuth, async (req, res) => {
+  const mine = await db.getNotes(req.user.email);
   res.send(mine);
 });
 
