@@ -23,7 +23,6 @@ const app = express();
 app.set('trust proxy', 1);
 
 const authCookieName = 'token';
-const users = [];
 const notes = [];
 
 // The service port. In production the front-end code is statically hosted by the service on the same port.
@@ -171,7 +170,7 @@ function enrichNote(note) {
 
 // Create a note
 const saveLimit = rateLimit([{ windowMs: 60 * 60_000, max: 30 }]);
-apiRouter.post('/notes', verifyAuth, saveLimit, (req, res) => {
+apiRouter.post('/notes', verifyAuth, saveLimit, async (req, res) => {
   const text = String(req.body?.text ?? '').trim();
   if (!text) return res.status(400).send({ msg: 'Empty note' });
 
@@ -186,7 +185,7 @@ apiRouter.post('/notes', verifyAuth, saveLimit, (req, res) => {
     keywords: [],
     status: 'pending',
   };
-  notes.push(note);
+  await db.addNote(note);
   res.status(201).send({ id: note.id, createdAt: note.createdAt });
 
   // After the undo window, label the note in the background if it still exists
@@ -258,7 +257,7 @@ async function createUser(email, password) {
     password: passwordHash,
     token: uuid.v4(),
   };
-  users.push(user);
+  await db.addUser(user);
 
   return user;
 }
@@ -266,7 +265,11 @@ async function createUser(email, password) {
 async function findUser(field, value) {
   if (!value) return null;
 
-  return users.find((u) => u[field] === value);
+  if (field == 'email') {
+    return await db.getUser(value);
+  }
+  
+  return await db.getUserByToken(value);
 }
 
 // setAuthCookie in the HTTP response
