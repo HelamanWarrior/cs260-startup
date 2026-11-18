@@ -85,13 +85,21 @@ apiRouter.post('/auth/create', authLimit, async (req, res) => {
     return res.status(400).send({ msg: 'Invalid email or password (min 8 characters)' });
   }
   if (await db.getUser(creds.email)) {
-    res.status(409).send({ msg: 'Existing user' });
-  } else {
-    const user = await createUser(creds.email, creds.password);
-
-    setAuthCookie(res, user.token);
-    res.send({ email: user.email });
+    return res.status(409).send({ msg: 'Existing user' });
   }
+
+  let user;
+  try {
+    user = await createUser(creds.email, creds.password);
+  } catch (err) {
+    // Two signups for the same email can both pass the check above; the unique
+    // index on users.email rejects the second one with a duplicate-key error.
+    if (err.code === 11000) return res.status(409).send({ msg: 'Existing user' });
+    throw err;
+  }
+
+  setAuthCookie(res, user.token);
+  res.send({ email: user.email });
 });
 
 // GetAuth login an existing user
@@ -128,15 +136,21 @@ apiRouter.delete('/auth/logout', async (req, res) => {
 });
 
 // ChangeAuth update the current user's password
-apiRouter.put('/auth/password', verifyAuth, async (req, res) => {
+apiRouter.put('/auth/password', verifyAuth, authLimit, async (req, res) => {
   const currentPassword = String(req.body?.currentPassword ?? '');
   const newPassword = String(req.body?.newPassword ?? '');
 
-  if (!(await bcrypt.compare(currentPassword, req.user.password))) {
-    return res.status(401).send({ msg: 'Current password is incorrect' });
+  // Cheap length checks first so oversized input never reaches bcrypt
+  if (newPassword.length < MIN_PASSWORD || newPassword.length > MAX_PASSWORD) {
+    return res.status(400).send({
+      msg: `New password must be ${MIN_PASSWORD} to ${MAX_PASSWORD} characters`,
+    });
   }
-  if (newPassword.length < 8) {
-    return res.status(400).send({ msg: 'New password must be at least 8 characters' });
+  if (
+    currentPassword.length > MAX_PASSWORD ||
+    !(await bcrypt.compare(currentPassword, req.user.password))
+  ) {
+    return res.status(401).send({ msg: 'Current password is incorrect' });
   }
   if (newPassword === currentPassword) {
     return res.status(400).send({ msg: 'New password must differ from the current one' });
@@ -156,8 +170,10 @@ apiRouter.get('/health', async (_req, res) => {
 
 const UNDO_GRACE_MS = 8000;
 
+// Returns a promise that always resolves (errors are logged), so callers can
+// await it to process notes one at a time.
 function enrichNote(note) {
-  generateTitleAndTags(note.text)
+  return generateTitleAndTags(note.text)
     .then((meta) => db.updateNote(note.id, note.owner, { ...meta, status: 'ready' }))
     .catch((err) => {
       console.error('Note enrichment failed:', err.message);
@@ -244,8 +260,14 @@ app.use((_req, res) => {
 });
 
 // Default error handler
+// Errors marked `expose` (e.g. a malformed JSON body -> 400) are safe to show.
+// Anything else may contain internal details (database errors, stack info), so
+// log it here and send the client a generic message.
 app.use(function (err, req, res, next) {
-   res.status(err.status || 500).send({ type: err.name, message: err.message });
+  const status = err.status || err.statusCode || 500;
+  if (status >= 500) console.error(err);
+  const msg = err.expose ? err.message : 'Internal server error';
+  res.status(status).send({ msg });
 });
 
 async function createUser(email, password) {
@@ -290,6 +312,20 @@ async function shutdown(server, wss) {
   process.exit(0);
 }
 
+// Re-run enrichment for notes left 'pending' or 'failed', e.g. because the
+// server restarted during the undo window or while Gemini was working.
+// Runs one note at a time so a backlog doesn't trip Gemini's rate limits.
+async function resumeEnrichment() {
+  const stale = await db.getUnfinishedNotes(Date.now() - UNDO_GRACE_MS);
+  if (!stale.length) return;
+
+  console.log(`Resuming enrichment for ${stale.length} note(s)`);
+  for (const note of stale) {
+    if (shuttingDown) return;
+    await enrichNote(note);
+  }
+}
+
 async function start() {
   await db.connect();
   console.log('Connected to MongoDB');
@@ -329,6 +365,9 @@ async function start() {
 
   wss.on('connection', handleConnection);
   server.listen(port, () => console.log(`Listening on port ${port}`));
+
+  // Background catch-up; don't block startup on it
+  resumeEnrichment().catch((err) => console.error('Resume enrichment failed:', err.message));
 }
 
 start().catch((err) => {

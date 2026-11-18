@@ -87,6 +87,16 @@ function updateNote(id, owner, fields) {
   return collections.notes().updateOne({ id, owner }, { $set: fields });
 }
 
+// Notes whose background enrichment never finished (e.g. the server restarted
+// mid-way, or Gemini failed). Only returns notes older than `olderThan` so we
+// don't grab notes that are still inside their undo window.
+function getUnfinishedNotes(olderThan) {
+  return collections.notes()
+    .find({ status: { $in: ['pending', 'failed'] }, createdAt: { $lt: olderThan } })
+    .sort({ createdAt: 1 }) // oldest first
+    .toArray();
+}
+
 // Find a single note by id, scoped to its owner. Resolves to null if not found.
 function getNote(id, owner) {
   if (!id || !owner) return null;
@@ -128,6 +138,7 @@ module.exports = {
   updateNote,
   getNote,
   getNotes,
+  getUnfinishedNotes,
   ping,
   close,
 };
