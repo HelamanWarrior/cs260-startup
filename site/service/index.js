@@ -158,11 +158,12 @@ const UNDO_GRACE_MS = 8000;
 
 function enrichNote(note) {
   generateTitleAndTags(note.text)
-    .then((meta) => Object.assign(note, meta, { status: 'ready' }))
+    .then((meta) => db.updateNote(note.id, note.owner, { ...meta, status: 'ready' }))
     .catch((err) => {
       console.error('Note enrichment failed:', err.message);
-      note.status = 'failed';
-    });
+      return db.updateNote(note.id, note.owner, { status: 'failed' });
+    })
+    .catch((err) => console.error('Note status update failed:', err.message));
 }
 
 // Create a note

@@ -26,6 +26,14 @@ async function connect() {
   client = new MongoClient(buildUrl());
   await client.connect();
   db = client.db(dbName);
+
+  await Promise.all([
+    db.collection('users').createIndex({ email: 1 }, { unique: true }),
+    db.collection('users').createIndex({ token: 1 }),
+    db.collection('notes').createIndex({ id: 1 }, { unique: true }),
+    db.collection('notes').createIndex({ owner: 1, createdAt: -1 }),
+  ]);
+
   return db;
 }
 
@@ -75,6 +83,10 @@ async function removeNote(id, owner) {
   return collections.notes().deleteOne({ id: id, owner: owner });
 }
 
+function updateNote(id, owner, fields) {
+  return collections.notes().updateOne({ id, owner }, { $set: fields });
+}
+
 // Find a single note by id, scoped to its owner. Resolves to null if not found.
 function getNote(id, owner) {
   if (!id || !owner) return null;
@@ -113,6 +125,7 @@ module.exports = {
   setUserPassword,
   addNote,
   removeNote,
+  updateNote,
   getNote,
   getNotes,
   ping,
