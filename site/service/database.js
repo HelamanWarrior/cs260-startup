@@ -54,8 +54,17 @@ async function addUser(user) {
   await collections.users().insertOne(user);
 }
 
-async function updateUser(user) {
-  await collections.users().updateOne({ email: user.email }, { $set: user });
+function setUserToken(email, token) {
+  return collections.users().updateOne({ email }, { $set: { token } });
+}
+
+function clearUserToken(token) {
+  if (!token) return null;
+  return collections.users().updateOne({ token }, { $unset: { token: '' } });
+}
+
+function setUserPassword(email, passwordHash, token) {
+  return collections.users().updateOne({ email }, { $set: { password: passwordHash, token } });
 }
 
 async function addNote(note) {
@@ -99,7 +108,9 @@ module.exports = {
   getUser,
   getUserByToken,
   addUser,
-  updateUser,
+  setUserToken,
+  clearUserToken,
+  setUserPassword,
   addNote,
   removeNote,
   getNote,

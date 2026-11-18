@@ -23,7 +23,6 @@ const app = express();
 app.set('trust proxy', 1);
 
 const authCookieName = 'token';
-const notes = [];
 
 // The service port. In production the front-end code is statically hosted by the service on the same port.
 const port = process.argv.length > 2 ? process.argv[2] : 3000;
@@ -105,6 +104,7 @@ apiRouter.post('/auth/login', authLimit, async (req, res) => {
   if (user) {
     if (await bcrypt.compare(creds.password, user.password)) {
       user.token = uuid.v4();
+      await db.setUserToken(user.email, user.token);
       setAuthCookie(res, user.token);
       res.send({ email: user.email });
       return;
@@ -122,10 +122,7 @@ apiRouter.get('/auth/me', verifyAuth, (req, res) => {
 
 // DeleteAuth logout a user
 apiRouter.delete('/auth/logout', async (req, res) => {
-  const user = await db.getUserByToken(req.cookies[authCookieName]);
-  if (user) {
-    delete user.token;
-  }
+  await db.clearUserToken(req.cookies[authCookieName]);
   res.clearCookie(authCookieName);
   res.status(204).end();
 });
@@ -145,10 +142,10 @@ apiRouter.put('/auth/password', verifyAuth, async (req, res) => {
     return res.status(400).send({ msg: 'New password must differ from the current one' });
   }
 
-  req.user.password = await bcrypt.hash(newPassword, 10);
-  // Rotate the session token so the new credentials take effect immediately
-  req.user.token = uuid.v4();
-  setAuthCookie(res, req.user.token);
+  const hash = await bcrypt.hash(newPassword, 10);
+  const token = uuid.v4();
+  await db.setUserPassword(req.user.email, hash, token);
+  setAuthCookie(res, token);
   res.status(204).end();
 });
 
@@ -232,7 +229,7 @@ apiRouter.post('/notes/answer', verifyAuth, answerLimit, async (req, res) => {
   if (!query) return res.status(400).send({ msg: 'Missing query' });
 
   try {
-    const mine = notes.filter((n) => n.owner === req.user.email);
+    const mine = await db.getNotes(req.user.email);
     res.send(await answerQuestion(mine, query));
   } catch (err) {
     console.error('Answer failed:', err.message);
@@ -287,6 +284,8 @@ async function shutdown(server, wss) {
     new Promise((resolve) => setTimeout(() => resolve(false), 5000)),
   ]);
   if (idle) transcriber.dispose();
+
+  await db.close().catch(console.error);
   process.exit(0);
 }
 
