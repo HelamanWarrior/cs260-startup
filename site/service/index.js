@@ -189,8 +189,13 @@ apiRouter.post('/notes', verifyAuth, saveLimit, async (req, res) => {
   res.status(201).send({ id: note.id, createdAt: note.createdAt });
 
   // After the undo window, label the note in the background if it still exists
-  setTimeout(() => {
-    if (notes.includes(note)) enrichNote(note);
+  setTimeout(async () => {
+    try {
+      const stillExists = await db.getNote(note.id, note.owner);
+      if (stillExists) enrichNote(note);
+    } catch (err) {
+      console.error('Note lookup failed:', err.message);
+    }
   }, UNDO_GRACE_MS);
 });
 
@@ -201,19 +206,18 @@ apiRouter.get('/notes', verifyAuth, async (req, res) => {
 });
 
 // Delete a note
-apiRouter.delete('/notes/:id', verifyAuth, (req, res) => {
-  const i = notes.findIndex((n) => n.id === req.params.id && n.owner === req.user.email);
-  if (i === -1) return res.status(404).send({ msg: 'Not found' });
-  notes.splice(i, 1);
+apiRouter.delete('/notes/:id', verifyAuth, async (req, res) => {
+  const result = await db.removeNote(req.params.id, req.user.email);
+  if (result.deletedCount === 0) return res.status(404).send({ msg: 'Not found' });
   res.status(204).end();
 });
 
 // Search notes
-apiRouter.get('/notes/search', verifyAuth, (req, res) => {
+apiRouter.get('/notes/search', verifyAuth, async (req, res) => {
   const q = String(req.query.q ?? '').trim().slice(0, 200);
   if (!q) return res.status(400).send({ msg: 'Missing query' });
 
-  const mine = notes.filter((n) => n.owner === req.user.email);
+  const mine = await db.getNotes(req.user.email);
   res.send(searchNotes(mine, q));
 });
 

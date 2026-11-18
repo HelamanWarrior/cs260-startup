@@ -62,6 +62,16 @@ async function addNote(note) {
   return collections.notes().insertOne(note);
 }
 
+async function removeNote(id, owner) {
+  return collections.notes().deleteOne({ id: id, owner: owner });
+}
+
+// Find a single note by id, scoped to its owner. Resolves to null if not found.
+function getNote(id, owner) {
+  if (!id || !owner) return null;
+  return collections.notes().findOne({ id: id, owner: owner }, { projection: { _id: 0 } });
+}
+
 function getNotes(owner) {
   return collections.notes()
     .find({ owner: owner }, { projection: { _id: 0, owner: 0 } }) // remove owner and id from results
@@ -91,6 +101,8 @@ module.exports = {
   addUser,
   updateUser,
   addNote,
+  removeNote,
+  getNote,
   getNotes,
   ping,
   close,
